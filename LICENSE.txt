@@ -1,0 +1,35 @@
+Copyright (c) 2019 Mari "emilymaitan" A. <https://github.com/emilymaitan>
+All rights reserved.
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software (binaries as well as source
+code) and associated documentation files (the "Software"),
+to use this Software without limitations concerning the rights to
+copy and/or modify copies of the Software for non-commercial, educational
+purposes only, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in ALL copies or substantial portions of the software.
+
+
+This code is part of an university assignment.
+Thou shalt not plagiarize, or thy professor will find out.
+The authors DO NOT ENCOURAGE plagiarism.
+
+
+DISCLAIMER:
+THIS SOFTWARE IS PROVIDED TO YOU "AS-IS", WITHOUT ANY WARRANTY OF ANY KIND,
+EXPRESSED OR IMPLIED, INCLUDED BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH YOU.
+SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, YOU (NOT ANY CONTRIBUTOR)
+ASSUME THE COST OF ANY NECESSARY SERVICING, REPAIR, OR CORRECTION.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+
+The authors may publish new and/or revised versions of this license.

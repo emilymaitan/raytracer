@@ -1,0 +1,32 @@
+# GITIGNORE - Things we don't want in our source control repo!
+
+# Raytracer output files
+*.png
+*.jpg
+
+# ... but we want our documentation image and everything in the resouces!
+!raytracer.png
+!/src/main/resources/scenes/*
+
+# IDEA files
+.idea/workspace.xml
+/out/
+
+# Java Compiled class files
+*.class
+
+# (Java) Package files
+*.jar
+*.zip
+*.tar.gz
+*.rar
+
+# Gradle things
+.gradle
+/build/
+
+# Gradle gui config
+gradle-app.setting
+
+# but we still need our wwrapper jar file!
+!gradle-wrapper.jar
