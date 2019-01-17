@@ -21,6 +21,9 @@
 *.tar.gz
 *.rar
 
+# ... except for our custom lib files
+!/lib/*.jar
+
 # Gradle things
 .gradle
 /build/

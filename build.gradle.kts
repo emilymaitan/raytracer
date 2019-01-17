@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     testCompile("junit", "junit", "4.12")
-    implementation(fileTree("lib") { include("*.jar") }) // fallback for future jars
+    implementation(fileTree("./lib") { include("*.jar") }) // fallback for future jars
 }
 
 configure<JavaPluginConvention> {
