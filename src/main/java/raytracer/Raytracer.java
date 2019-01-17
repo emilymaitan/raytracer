@@ -20,8 +20,10 @@ import java.awt.image.BufferedImage;
 
 public class Raytracer {
 
+    /*
     // Syntax: raytracer {file <filename> | scene {example1|example2} | color}
     public static void main(String[] args) {
+
         String scenefile = null;
         boolean renderColor = false;
 
@@ -52,15 +54,25 @@ public class Raytracer {
             return;
         }
 
-        if (scenefile == null) scenefile = SceneParser.example2; // fallback default
+        if (scenefile == null) { // fallback default
+            scenefile = SceneParser.example2;
+            System.out.printf("Now rendering: %s... (fallback default)%n", scenefile);
+        } else
+            System.out.printf("Now rendering: %s...%n", scenefile);
 
-        System.out.printf("Now rendering: %s...%n", scenefile);
         Scene scene = SceneParser.parseXML(scenefile);
         BufferedImage image = renderSceneAsImage(scene);
         ImageWriter.writeImage(
                 image,
                 "png",
                 scene.getOutputFileName());
+    } */
+
+    public static void main(String[] args) {
+        Scene scene = SceneParser.parseXML(SceneParser.example3);
+        //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
+        BufferedImage image = renderSceneAsImage(scene);
+        ImageWriter.writeImage(image, "png", "scene");
     }
 
     public static BufferedImage renderRaycolorAsImage(int resX, int resY) {
@@ -108,15 +120,15 @@ public class Raytracer {
         // for each pixel in this image, do...
         for (int i = 0; i < camera.getRes().getHorizontal(); i++) {
             for (int j = 0; j < camera.getRes().getVertical(); j++) {
-                // TODO: get a ray from the camera to this pixel
+                // get a ray from the camera to this pixel
                 //Ray ray = camera.generateRay(i, j);
                 Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
 
-                // TODO: trace this ray
+                // trace this ray
                 Color color = traceRay(scene, ray);
                 //Color color = traceDebug(ray);
 
-                // TODO: store the resulting color in the pixel
+                // store the resulting color in the pixel
                 image.setRGB(i, j, color.getRGB());
             }
         }
@@ -151,10 +163,10 @@ public class Raytracer {
 
     // https://www.youtube.com/watch?v=m_IeoWvSbQI
     public static Color traceRay(Scene scene, Ray ray) {
-        // TODO: initalize the color to black
+        //initialize the color to black
         Color color = Color.BLACK;
 
-        // TODO: find closest intersection i
+        // find closest intersection i
         // For all objects in the scene, do an intersection test.
         double t = Double.MAX_VALUE-1; // the t-parameter of the ray where we intersect
         Surface closestSurface = null;

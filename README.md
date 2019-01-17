@@ -11,10 +11,10 @@ type in the following commands:
 
 - `./gradlew build`
     - this will download all external jar files, and build the project
-- `./gradlew run --args "arg0 arg1"`
+- `./gradlew run --args "arg0 arg1 arg2"`
     - this will automatically execute the main method as specified in the `build.gradle.kts` file
     - other tasks include `clean` (remove all build files) and `javadoc`
-    - arguments: {file <filename> | scene {example1|example2} | color}
+    - arguments: {file <'full/file/path'> | scene {example1|example2} | color}
     
 For Windows, use `gradlew.bat` instead.
 
