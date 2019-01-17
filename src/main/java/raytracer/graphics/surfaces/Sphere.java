@@ -4,6 +4,7 @@ import raytracer.graphics.Ray;
 import raytracer.graphics.illumination.Phong;
 import raytracer.graphics.materials.Material;
 import raytracer.graphics.materials.SolidMaterial;
+import raytracer.graphics.trafo.Transformation;
 import raytracer.math.MathUtils;
 import raytracer.math.Vector3;
 
@@ -89,8 +90,8 @@ public class Sphere extends Surface {
         return (o.getX()*o.getX() + o.getY()*o.getY() + o.getZ()*o.getZ() - radius*radius) <= MathUtils.EPSILON;
     }
 
-    public Sphere(Material material, Vector3 position, double radius) {
-        super(material);
+    public Sphere(Material material, Transformation transformation, Vector3 position, double radius) {
+        super(material, transformation);
         this.position = position;
         this.radius = radius;
     }
@@ -101,6 +102,7 @@ public class Sphere extends Surface {
                 "radius=" + radius +
                 ", position=" + position +
                 ", material=" + material +
+                ", Transformation=" + transformation +
                 ']';
     }
 }

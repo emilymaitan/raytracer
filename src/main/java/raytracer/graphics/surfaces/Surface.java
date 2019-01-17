@@ -2,13 +2,13 @@ package raytracer.graphics.surfaces;
 
 import raytracer.graphics.Ray;
 import raytracer.graphics.materials.Material;
+import raytracer.graphics.trafo.Transformation;
 import raytracer.math.Vector3;
-
-import java.awt.*;
 
 public abstract class Surface {
 
     protected Material material;
+    protected Transformation transformation;
 
     /**
      * Checks whether a ray intersects with this surface.
@@ -24,11 +24,16 @@ public abstract class Surface {
      */
     public abstract Vector3 surfaceNormal(Vector3 at);
 
-    public Surface(Material material) {
+    public Surface(Material material, Transformation transformation) {
         this.material = material;
+        this.transformation = transformation;
     }
 
     public Material getMaterial() {
         return material;
+    }
+
+    public Transformation getTransformation() {
+        return transformation;
     }
 }

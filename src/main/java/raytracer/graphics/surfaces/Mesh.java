@@ -20,15 +20,9 @@ public class Mesh extends Surface {
     }
 
     public Mesh(Material material, String name) {
-        super(material);
+        super(material, null);
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "raytracer.graphics.surfaces.Mesh[" +
-                "name='" + name + '\'' +
-                ", material=" + material +
-                ']';
-    }
+   // TODO tostring
 }

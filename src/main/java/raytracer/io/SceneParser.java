@@ -17,6 +17,7 @@ import raytracer.graphics.materials.SolidMaterial;
 import raytracer.graphics.materials.TexturedMaterial;
 import raytracer.graphics.surfaces.Mesh;
 import raytracer.graphics.surfaces.Sphere;
+import raytracer.graphics.trafo.Transformation;
 import raytracer.math.Vector3;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -174,8 +175,12 @@ public class SceneParser {
                     // there may be at most one material
                     Material material = parseMaterial(sphere);
 
+                    // there may be at most one transformation
+                    Transformation transform = parseTransform(sphere);
+
                     Sphere s = new Sphere(
                             material,
+                            transform,
                             parseVec3(position),
                             Double.valueOf(sphere.getAttribute("radius"))
                     );
@@ -267,8 +272,29 @@ public class SceneParser {
         throw new RuntimeException("Unknown Material Type!");
     }
 
+    private static Transformation parseTransform(Element element) {
+        Element trafos = (Element) element.getElementsByTagName("transform").item(0);
+        if (trafos == null) return null;
+
+        Element translate = (Element) trafos.getElementsByTagName("translate").item(0);
+        Element scale = (Element) trafos.getElementsByTagName("scale").item(0);
+        Element rotateX = (Element) trafos.getElementsByTagName("rotateX").item(0);
+        Element rotateY = (Element) trafos.getElementsByTagName("rotateY").item(0);
+        Element rotateZ = (Element) trafos.getElementsByTagName("rotateZ").item(0);
+
+        return new Transformation(
+                translate == null ? null : parseVec3(translate),
+                scale == null ? null : parseVec3(scale),
+                new Vector3(
+                        rotateX == null ? 0 : Double.valueOf(rotateX.getAttribute("theta")),
+                        rotateY == null ? 0 : Double.valueOf(rotateY.getAttribute("theta")),
+                        rotateZ == null ? 0 : Double.valueOf(rotateZ.getAttribute("theta"))
+                )
+        );
+    }
+
     public static void main(String[] args) {
-        Scene scene = SceneParser.parseXML(example1);
+        Scene scene = SceneParser.parseXML(example5);
         System.out.println(scene.toString());
     }
 }

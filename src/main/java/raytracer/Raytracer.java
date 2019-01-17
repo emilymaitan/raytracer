@@ -148,6 +148,7 @@ public class Raytracer {
                         1,
                         Color.CYAN
                 ),
+                null,
                 new Vector3(0,0,-2),
                 1
         );
