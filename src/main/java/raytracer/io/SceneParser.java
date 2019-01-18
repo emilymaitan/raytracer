@@ -17,6 +17,7 @@ import raytracer.graphics.materials.SolidMaterial;
 import raytracer.graphics.materials.TexturedMaterial;
 import raytracer.graphics.surfaces.Mesh;
 import raytracer.graphics.surfaces.Sphere;
+import raytracer.graphics.surfaces.obj.TriangleFace;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.math.Vector3;
 
@@ -26,6 +27,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Contains methods for parsing scene data out of XML files.
@@ -189,7 +194,11 @@ public class SceneParser {
                 }
             }
 
-            // next, for meshes TODO test
+            // next, for meshes
+
+            // generate a list of already parsed OBJ files for performance increase
+            Map<String, ArrayList<TriangleFace>> parsedOBJs = new HashMap<>();
+
             NodeList meshes = surfaces.getElementsByTagName("mesh");
             for (int i = 0; i < meshes.getLength(); i++) {
                 Node node = meshes.item(i);
@@ -204,12 +213,25 @@ public class SceneParser {
                     String objDir = xmlFile.getAbsolutePath().substring(
                             0, xmlFile.getAbsolutePath().lastIndexOf(File.separator)
                     );
+
+                    String objName = mesh.getAttribute("name");
+                    ArrayList<TriangleFace> objData;
+                    if (!parsedOBJs.containsKey(objName)) {
+                        objData = ObjParser.parseObj(objDir+File.separator+objName);
+                        parsedOBJs.put(objName, objData);
+                    } else {
+                        objData = parsedOBJs.get(objName);
+                    }
+
                     //System.out.println("OBJ @ " + objDir + File.separator + mesh.getAttribute("name"));
+                    Mesh m = new Mesh(
+                            parseMaterial(mesh),
+                            parseTransform(mesh),
+                            objName,
+                            objData
+                    );
 
-
-
-                    // TODO new mesh()
-                    // TODO add to scene
+                    scene.addSurface(m);
                 }
             }
 

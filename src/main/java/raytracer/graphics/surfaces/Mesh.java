@@ -24,10 +24,18 @@ public class Mesh extends Surface {
         return null;
     }
 
-    public Mesh(Material material, Transformation transformation, String name) {
+    public Mesh(Material material, Transformation transformation, String name, ArrayList<TriangleFace> faces) {
         super(material, transformation);
         this.name = name;
+        this.faces = faces;
     }
 
-   // TODO tostring
+    @Override
+    public String toString() {
+        return "Mesh['" + name + "', " +
+                "faces=" + faces +
+                ", material=" + material +
+                ", transformation=" + transformation +
+                '}';
+    }
 }

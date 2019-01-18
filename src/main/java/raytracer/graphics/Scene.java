@@ -33,7 +33,7 @@ public class Scene {
                 "background color: " + backgroundColor.toString() + "\n" +
                 "ambient light: " + ambientLight.toString() + "\n" +
                 "lights: " +  lights.stream().map(Object::toString).collect(Collectors.joining(", ")) + "\n" +
-                "surfaces: " + surfaces.stream().map(Object::toString).collect(Collectors.joining(", "))
+                "surfaces: " + surfaces.stream().map(Object::toString).collect(Collectors.joining("\n"))
                 ;
     }
 
