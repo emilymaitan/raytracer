@@ -193,17 +193,23 @@ public class SceneParser {
             NodeList meshes = surfaces.getElementsByTagName("mesh");
             for (int i = 0; i < meshes.getLength(); i++) {
                 Node node = meshes.item(i);
-                Element name;
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element mesh = (Element) node;
-                    name = (Element) mesh.getElementsByTagName("name").item(0);
-                    Material material = parseMaterial(mesh);
-                    Mesh m = new Mesh(
-                            material,
-                            mesh.getAttribute("name") // TODO FILEPATH
-                    );
 
-                    scene.addSurface(m);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    // parse out all data from the xml
+                    Element mesh = (Element) node;
+                    Material material = parseMaterial(mesh);
+                    Transformation transformation = parseTransform(mesh);
+
+                    // parse out the mesh information from the OBJ file
+                    String objDir = xmlFile.getAbsolutePath().substring(
+                            0, xmlFile.getAbsolutePath().lastIndexOf(File.separator)
+                    );
+                    //System.out.println("OBJ @ " + objDir + File.separator + mesh.getAttribute("name"));
+
+
+
+                    // TODO new mesh()
+                    // TODO add to scene
                 }
             }
 
