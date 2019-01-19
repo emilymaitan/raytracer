@@ -31,8 +31,6 @@ public class ObjParser {
 
             ArrayList<TriangleFace> faces = new ArrayList<>();
 
-            System.out.println(builder.faces.get(0));
-
             for(Face face : builder.faces) {
                 ArrayList<MeshVertex> vertices = new ArrayList<>();
                 for(FaceVertex v : face.vertices) {

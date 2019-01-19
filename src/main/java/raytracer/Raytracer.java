@@ -76,7 +76,7 @@ public class Raytracer {
         Scene scene = SceneParser.parseXML(SceneParser.example3);
         //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
         BufferedImage image = renderSceneAsImage(scene);
-        ImageWriter.writeImage(image, "png", "debug");
+        ImageWriter.writeImage(image, "png", "scene");
     }
 
     public static BufferedImage renderRaycolorAsImage(int resX, int resY) {
@@ -95,8 +95,8 @@ public class Raytracer {
                 double u = camera.imPlane_u(i);
                 double v = camera.imPlane_v(j);
 
-                Ray ray = camera.generateRay(u,v);
-                //Ray ray = camera.generateRay(i, j);
+                //Ray ray = camera.generateRay(u,v);
+                Ray ray = camera.generateRay(i, j);
 
                 //Color color = traceDebug(ray);
                 Color color = ray.toColor(1);
@@ -121,6 +121,9 @@ public class Raytracer {
                 camera.getRes().getVertical(),
                 BufferedImage.TYPE_INT_ARGB);
 
+        // TODO remove
+        ArrayList<TriangleFace> meshData = ObjParser.parseObj("C:\\Users\\Emily\\3D Objects\\debug.obj");
+
         // for each pixel in this image, do...
         for (int i = 0; i < camera.getRes().getHorizontal(); i++) {
             for (int j = 0; j < camera.getRes().getVertical(); j++) {
@@ -129,8 +132,8 @@ public class Raytracer {
                 Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
 
                 // trace this ray
-                //Color color = traceRay(scene, ray);
-                Color color = traceDebugMesh(ray);
+                Color color = traceRay(scene, ray);
+                //Color color = traceDebugMesh(ray, meshData);
 
                 // store the resulting color in the pixel
                 image.setRGB(i, j, color.getRGB());
@@ -140,18 +143,19 @@ public class Raytracer {
         return image;
     }
 
-    public static Color traceDebugMesh(Ray ray) {
+    public static Color traceDebugMesh(Ray ray, ArrayList<TriangleFace> meshData) {
         Color color = Color.BLACK;
 
         Mesh mesh = new Mesh(
                 new SolidMaterial(new Phong(),1,1,1,Color.CYAN),
                 null,
                 "plane.obj",
-                ObjParser.parseObj("C:\\Users\\Emily\\workspace\\WebStorm\\GFX_Lab-1b\\obj\\plane.obj")
+                meshData
         );
 
         double t = Double.MAX_VALUE-1;
         double tt = mesh.intersect(ray);
+        //System.out.println("tt: " + tt);
         if ((tt > 0) && (tt < t)) {
             return ((SolidMaterial)mesh.getMaterial()).getColor();
         }

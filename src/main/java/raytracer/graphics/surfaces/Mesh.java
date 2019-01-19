@@ -43,7 +43,8 @@ public class Mesh extends Surface {
 
         // first, check whether the ray and triangle are parallel
         // if the dot of the triangle normal and the ray is 0, they are!
-        double det = ray.getDirection().dot(triangle.getNormal());
+        Vector3 p = ray.getDirection().cross(triangle.getEdgev13());
+        double det = p.dot(triangle.getEdgev12());
         if (Math.abs(det) <= MathUtils.EPSILON) { // no backface culling
             return Double.MAX_VALUE; // there is no intersection
         }
@@ -54,22 +55,22 @@ public class Mesh extends Surface {
         // now, we calculate the barycentric a and b coordinates, and check if they fulfill the constraints
         // it must be that 0 <= a, b <=1 ... if that is not fulfilled, we have no intersection
         // we start with calculating a and checking the constraints:
-        Vector3 s = ray.getOriginPoint().subtract(triangle.getVertex1().getV());
-        double a = invDet * s.dot(triangle.getNormal());
+        Vector3 aa = ray.getOriginPoint().subtract(triangle.getVertex1().getV());
+        double a = invDet * aa.dot(p);
         if (a < 0.0 || a > 1.0) { // the constraint is violated
             return Double.MAX_VALUE;
         }
 
         // a is allright, now we check for b
-        Vector3 q = s.cross(triangle.getEdgev12());
-        double b = invDet * ray.getDirection().dot(q);
+        Vector3 bb = aa.cross(triangle.getEdgev12());
+        double b = invDet * ray.getDirection().dot(bb);
         if (b < 0.0 || b > 1.0) { // the constraint is violated
             return Double.MAX_VALUE;
         }
 
         // We now know that both a and b are valid, and can use them to calculate t.
         // This will give us the intersection point!
-        double t = invDet * triangle.getEdgev13().dot(q);
+        double t = invDet * triangle.getEdgev13().dot(bb);
 
         // The final check: is this a ray or line intersection?
         if (t > MathUtils.EPSILON) {
@@ -85,7 +86,6 @@ public class Mesh extends Surface {
 
     @Override
     public Vector3 surfaceNormal(Vector3 at) {
-        System.out.println("surfnorm");
         // todo checks with isPointOnTriangle
         return lastHit.getNormal().normalize();
     }
