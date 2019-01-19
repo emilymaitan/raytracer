@@ -4,25 +4,53 @@ import raytracer.math.Vector3;
 
 public class MeshVertex {
 
-    public Vector3 geometricVertex;
-    public Vector3 vertexNormal;
-    public double textureU;
-    public double textureV;
+    /**
+     * The geometric vertex.
+     */
+    private Vector3 v;
+    /**
+     * The vertex normal.
+     */
+    private Vector3 vn;
+    /**
+     * Texture coordinate u.
+     */
+    private double texU;
+    /**
+     * Texture coordinate v.
+     */
+    private double texV;
 
-    public MeshVertex(Vector3 geometricVertex, Vector3 vertexNormal, double textureU, double textureV) {
-        this.geometricVertex = geometricVertex;
-        this.vertexNormal = vertexNormal;
-        this.textureU = textureU;
-        this.textureV = textureV;
+    public MeshVertex(Vector3 v, Vector3 vn, double texU, double texV) {
+        this.v = v;
+        this.vn = vn;
+        this.texU = texU;
+        this.texV = texV;
     }
 
     @Override
     public String toString() {
         return "MeshVertex[" +
-                "geometricVertex=" + geometricVertex +
-                ", vertexNormal=" + vertexNormal +
-                ", textureU=" + textureU +
-                ", textureV=" + textureV +
+                "v=" + v +
+                ", vn=" + vn +
+                ", texU=" + texU +
+                ", texV=" + texV +
                 ']';
+    }
+
+    public Vector3 getV() {
+        return v;
+    }
+
+    public Vector3 getVn() {
+        return vn;
+    }
+
+    public double getTexU() {
+        return texU;
+    }
+
+    public double getTexV() {
+        return texV;
     }
 }
