@@ -8,15 +8,19 @@ import raytracer.graphics.lights.ParallelLight;
 import raytracer.graphics.lights.PointLight;
 import raytracer.graphics.lights.SpotLight;
 import raytracer.graphics.materials.SolidMaterial;
+import raytracer.graphics.surfaces.Mesh;
 import raytracer.graphics.surfaces.Sphere;
 import raytracer.graphics.surfaces.Surface;
+import raytracer.graphics.surfaces.obj.TriangleFace;
 import raytracer.io.ImageWriter;
+import raytracer.io.ObjParser;
 import raytracer.io.SceneParser;
 import raytracer.math.MathUtils;
 import raytracer.math.Vector3;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Raytracer {
 
@@ -72,7 +76,7 @@ public class Raytracer {
         Scene scene = SceneParser.parseXML(SceneParser.example3);
         //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
         BufferedImage image = renderSceneAsImage(scene);
-        ImageWriter.writeImage(image, "png", "scene");
+        ImageWriter.writeImage(image, "png", "debug");
     }
 
     public static BufferedImage renderRaycolorAsImage(int resX, int resY) {
@@ -125,8 +129,8 @@ public class Raytracer {
                 Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
 
                 // trace this ray
-                Color color = traceRay(scene, ray);
-                //Color color = traceDebug(ray);
+                //Color color = traceRay(scene, ray);
+                Color color = traceDebugMesh(ray);
 
                 // store the resulting color in the pixel
                 image.setRGB(i, j, color.getRGB());
@@ -136,8 +140,27 @@ public class Raytracer {
         return image;
     }
 
+    public static Color traceDebugMesh(Ray ray) {
+        Color color = Color.BLACK;
+
+        Mesh mesh = new Mesh(
+                new SolidMaterial(new Phong(),1,1,1,Color.CYAN),
+                null,
+                "plane.obj",
+                ObjParser.parseObj("C:\\Users\\Emily\\workspace\\WebStorm\\GFX_Lab-1b\\obj\\plane.obj")
+        );
+
+        double t = Double.MAX_VALUE-1;
+        double tt = mesh.intersect(ray);
+        if ((tt > 0) && (tt < t)) {
+            return ((SolidMaterial)mesh.getMaterial()).getColor();
+        }
+
+        return color;
+    }
+
     @Deprecated
-    public static Color traceDebug(Ray ray) {
+    public static Color traceDebugSphere(Ray ray) {
         Color color = Color.BLACK;
 
         Sphere sphere = new Sphere(

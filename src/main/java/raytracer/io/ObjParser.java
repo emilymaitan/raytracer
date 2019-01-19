@@ -31,14 +31,16 @@ public class ObjParser {
 
             ArrayList<TriangleFace> faces = new ArrayList<>();
 
+            System.out.println(builder.faces.get(0));
+
             for(Face face : builder.faces) {
                 ArrayList<MeshVertex> vertices = new ArrayList<>();
                 for(FaceVertex v : face.vertices) {
                     MeshVertex mv = new MeshVertex(
-                            new Vector3((double)v.v.x, (double)v.v.y, (double)v.v.z),
-                            new Vector3((double)v.n.x, (double)v.n.y, (double)v.n.z),
-                            (double)v.t.u,
-                            (double)v.t.v
+                            v.v == null ? null : new Vector3((double)v.v.x, (double)v.v.y, (double)v.v.z),
+                            v.n == null ? null : new Vector3((double)v.n.x, (double)v.n.y, (double)v.n.z),
+                            v.t == null ? null :(double)v.t.u,
+                            v.t == null ? null :(double)v.t.v
                     );
                     vertices.add(mv);
                 }

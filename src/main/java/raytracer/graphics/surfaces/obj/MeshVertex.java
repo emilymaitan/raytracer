@@ -15,13 +15,13 @@ public class MeshVertex {
     /**
      * Texture coordinate u.
      */
-    private double texU;
+    private Double texU;
     /**
      * Texture coordinate v.
      */
-    private double texV;
+    private Double texV;
 
-    public MeshVertex(Vector3 v, Vector3 vn, double texU, double texV) {
+    public MeshVertex(Vector3 v, Vector3 vn, Double texU, Double texV) {
         this.v = v;
         this.vn = vn;
         this.texU = texU;
