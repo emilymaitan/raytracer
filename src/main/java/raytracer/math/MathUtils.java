@@ -10,7 +10,7 @@ public class MathUtils {
     /**
      * A small number usually used to account for floating point errors.
      */
-    public static final double EPSILON = 0.0005;
+    public static final double EPSILON = 0.00005;
 
     /**
      * Solves equations of the form ax^2 + bx + c for x with the formula:

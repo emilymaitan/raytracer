@@ -222,9 +222,7 @@ public class Raytracer {
         int r = 0, g = 0, b = 0;
 
         // First, factor in the ambient light.
-        Color amb = closestSurface.getMaterial().getPhong().computeAmbient(
-                closestSurface.getMaterial().getMaterialcolor()
-        );
+        Color amb = closestSurface.illuminateAmbient();
         r += amb.getRed();
         g += amb.getGreen();
         b += amb.getBlue();
@@ -233,7 +231,7 @@ public class Raytracer {
         for (int i = 0; i < scene.getLights().size(); i++) {
             // Compute the required vectors for phong illumination:
             Vector3 surfaceToLight = null;
-            Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos).normalize();
+            Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos);
 
             // Which kind of light source is it?
             if (scene.getLights().get(i) instanceof ParallelLight) {
@@ -247,19 +245,23 @@ public class Raytracer {
             } else throw new RuntimeException("Unknown light type!");
 
             // Are we shadowed?
+            // We start from a slightly offset position so that we don't get shadowed by "ourself".
             Vector3 ipOffset = intersectionPos.add(surfaceNormal.multiply(MathUtils.EPSILON));
             Ray shadowRay = new Ray(ipOffset, surfaceToLight);
             boolean shadowed = false;
             for (Surface s : scene.getSurfaces()) {
-                if ((s.intersect(ray) > 0)) {
-                    shadowed = true; break;
+                double tt = s.intersect(shadowRay);
+                if (tt > 0 && tt < Double.MAX_VALUE) {
+                    shadowed = true; break; // TODO adjust for translucent things
                 }
             }
 
-
             // Compute color
-            Color phong = closestSurface.getMaterial().getPhong().computeIllumination(
-                    closestSurface.getMaterial().getMaterialcolor(), surfaceToLight, surfaceNormal,
+            Color phong = closestSurface.illuminate(
+                    scene.getLights().get(i).getColor(),
+                    surfaceToLight,
+                    surfaceNormal,
+                    intersectionPos.subtract(scene.getCamera().getPosition()).normalize(),
                     scene.getAmbientLight() == null
             );
 

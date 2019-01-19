@@ -5,6 +5,8 @@ import raytracer.graphics.materials.Material;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.math.Vector3;
 
+import java.awt.*;
+
 public abstract class Surface {
 
     protected Material material;
@@ -23,6 +25,14 @@ public abstract class Surface {
      * @return normalized surface normal vector
      */
     public abstract Vector3 surfaceNormal(Vector3 at);
+
+    public Color illuminate(Color lightColor, Vector3 surfToLight, Vector3 surfToView, Vector3 surfNormal, boolean includeAmbient) {
+        return material.getPhong().computeIllumination(material.getMaterialcolor(),lightColor,surfToLight,surfToView,surfNormal,includeAmbient);
+    }
+
+    public Color illuminateAmbient() {
+        return material.getPhong().computeAmbient(material.getMaterialcolor());
+    }
 
     public Surface(Material material, Transformation transformation) {
         this.material = material;
