@@ -133,6 +133,12 @@ public class SceneParser {
                             scene.addLight(parallelLight);
                             break;
                         case "point_light":
+                            position = (Element) light.getElementsByTagName("position").item(0);
+                            PointLight pointLight = new PointLight(
+                                    parseColor(color),
+                                    parseVec3(position)
+                            );
+                            scene.addLight(pointLight);
                             break;
                         case "spot_light":
                             position = (Element) light.getElementsByTagName("position").item(0);
@@ -308,7 +314,7 @@ public class SceneParser {
     }
 
     public static void main(String[] args) {
-        Scene scene = SceneParser.parseXML(example2);
+        Scene scene = SceneParser.parseXML(example3);
         System.out.println(scene.toString());
     }
 }
