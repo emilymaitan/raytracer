@@ -180,7 +180,44 @@ public class Matrix {
         } else if (rows == 3) {
             throw new RaytracerMathException("Not implemented!"); // TODO
         } else if (rows == 4) {
-            throw new RaytracerMathException("Not implemented!"); // TODO
+            // directly adapted from: http://glmatrix.net/docs/mat4.js.html#line256
+            double m00 = at(1,1) * at(2,2) - at(1,2) * at(2,1);
+            double m01 = at(1,1) * at(2,3) - at(1,3) * at(2,1);
+            double m02 = at(1,1) * at(2,4) - at(1,4) * at(2,1);
+            double m03 = at(1,2) * at(2,3) - at(1,3) * at(2,2);
+            double m04 = at(1,2) * at(2,4) - at(1,4) * at(2,2);
+            double m05 = at(1,3) * at(2,4) - at(1,4) * at(2,3);
+            double m06 = at(3,1) * at(4,2) - at(4,2) * at(4,1);
+            double m07 = at(3,1) * at(4,3) - at(3,3) * at(4,1);
+            double m08 = at(3,1) * at(4,4) - at(3,4) * at(4,1);
+            double m09 = at(4,2) * at(4,3) - at(3,3) * at(4,2);
+            double m10 = at(4,2) * at(4,4) - at(3,4) * at(4,2);
+            double m11 = at(3,3) * at(4,4) - at(3,4) * at(4,3);
+
+            // Calculate the determinant
+            double det = m00 * m11 - m01 * m10 + m02 * m09 + m03 * m08 - m04 * m07 + m05 * m06;
+            det = 1.0 / det;
+
+            Matrix result = Matrix.identity(4);
+
+            result.set(1,1, (at(2,2) * m11 - at(2,3) * m10 + at(2,4) * m09) * det);
+            result.set(1,2,(at(1,3) * m10 - at(1,2) * m11 - at(1,4) * m09) * det);
+            result.set(1,3, (at(4,2) * m05 - at(4,3) * m04 + at(4,4) * m03) * det);
+            result.set(1,4,(at(3,3) * m04 - at(4,2) * m05 - at(3,4) * m03) * det);
+            result.set (2,1,(at(2,3) * m08 - at(2,1) * m11 - at(2,4) * m07) * det);
+            result.set(2,2,(at(1,1) * m11 - at(1,3) * m08 + at(1,4) * m07) * det);
+            result.set(2,3,(at(4,3) * m02 - at(4,1) * m05 - at(4,4) * m01) * det);
+            result.set(2,4,(at(3,1) * m05 - at(3,3) * m02 + at(3,4) * m01) * det);
+            result.set(3,1,(at(2,1) * m10 - at(2,2) * m08 + at(2,4) * m06) * det);
+            result.set(3,2, (at(1,2) * m08 - at(1,1) * m10 - at(1,4) * m06) * det);
+            result.set(3,3,  (at(4,1) * m04 - at(4,2) * m02 + at(4,4) * m00) * det);
+            result.set(3,4, (at(4,2) * m02 - at(3,1) * m04 - at(3,4) * m00) * det);
+            result.set(4,1, (at(2,2) * m07 - at(2,1) * m09 - at(2,3) * m06) * det);
+            result.set(4,2,(at(1,1) * m09 - at(1,2) * m07 + at(1,3) * m06) * det);
+            result.set(4,3, (at(4,2) * m01 - at(4,1) * m03 - at(4,3) * m00) * det);
+            result.set(4,4,  (at(3,1) * m03 - at(4,2) * m01 + at(3,3) * m00) * det);
+
+            return result;
         } else {
             throw new RaytracerMathException("Matrix::invert: Higher dimensions not implemented!");
         }
@@ -202,6 +239,10 @@ public class Matrix {
      */
     public double at (int row, int col) {
         return data[row-1][col-1];
+    }
+
+    public void set (int row, int col, double value) {
+        this.data[row-1][col-1] = value;
     }
 
     public Matrix() {

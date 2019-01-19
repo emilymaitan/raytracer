@@ -74,9 +74,9 @@ public class Raytracer {
 
     public static void main(String[] args) {
         Scene scene = SceneParser.parseXML(SceneParser.example3);
-        //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
-        BufferedImage image = renderSceneAsImage(scene);
-        ImageWriter.writeImage(image, "png", "scene");
+        BufferedImage image = renderRaycolorAsImage(500,500);
+        //BufferedImage image = renderSceneAsImage(scene);
+        ImageWriter.writeImage(image, "png", "rayToColor");
     }
 
     public static BufferedImage renderRaycolorAsImage(int resX, int resY) {
@@ -128,8 +128,8 @@ public class Raytracer {
         for (int i = 0; i < camera.getRes().getHorizontal(); i++) {
             for (int j = 0; j < camera.getRes().getVertical(); j++) {
                 // get a ray from the camera to this pixel
-                //Ray ray = camera.generateRay(i, j);
-                Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
+                Ray ray = camera.generateRay(i, j);
+                //Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
 
                 // trace this ray
                 Color color = traceRay(scene, ray);
