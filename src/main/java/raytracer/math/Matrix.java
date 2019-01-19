@@ -194,11 +194,10 @@ public class Matrix {
             double m10 = at(4,2) * at(4,4) - at(3,4) * at(4,2);
             double m11 = at(3,3) * at(4,4) - at(3,4) * at(4,3);
 
-            // Calculate the determinant
-            double det = m00 * m11 - m01 * m10 + m02 * m09 + m03 * m08 - m04 * m07 + m05 * m06;
-            det = 1.0 / det;
+            // Calculate the inverse determinant
+            double det = 1.0 / (m00 * m11 - m01 * m10 + m02 * m09 + m03 * m08 - m04 * m07 + m05 * m06);
 
-            Matrix result = Matrix.identity(4);
+            Matrix result = new Matrix(4,4);
 
             result.set(1,1, (at(2,2) * m11 - at(2,3) * m10 + at(2,4) * m09) * det);
             result.set(1,2,(at(1,3) * m10 - at(1,2) * m11 - at(1,4) * m09) * det);
