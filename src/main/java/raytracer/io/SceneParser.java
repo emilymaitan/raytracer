@@ -109,27 +109,22 @@ public class SceneParser {
 
             // ============================ LIGHTS ========================== //
             Element lights = (Element) doc.getElementsByTagName("lights").item(0);
+            NodeList allLights = lights.getChildNodes();
 
-            // AMBIENT
-            NodeList ambNodes = lights.getElementsByTagName("ambient_light");
-            // there may be at most one
-            if (ambNodes.getLength() == 1) {
-                Element amb = (Element) ambNodes.item(0);
-                Element ambColor = (Element) amb.getElementsByTagName("color").item(0);
-                scene.setAmbientLight(parseColor(ambColor));
-            }
-
-            // PARALLEL, POINT, SPOT
-            NodeList parNodes = lights.getElementsByTagName("parallel_light");
-            // there may be 0-inf
-            for (int i = 0; i < parNodes.getLength(); i++) {
-                Node node = parNodes.item(i);
+            for (int i = 0; i < allLights.getLength(); i++) {
+                Node node = allLights.item(i);
                 Element color, direction, position, falloff = null;
+
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element light = (Element) node;
-                    switch(light.getNodeName()) {
+
+                    color = (Element) light.getElementsByTagName("color").item(0);
+
+                    switch (light.getNodeName()) {
+                        case "ambient_light":
+                            scene.setAmbientLight(parseColor(color));
+                            break;
                         case "parallel_light":
-                            color = (Element) light.getElementsByTagName("color").item(0);
                             direction = (Element) light.getElementsByTagName("direction").item(0);
                             ParallelLight parallelLight = new ParallelLight(
                                     parseColor(color),
@@ -137,17 +132,9 @@ public class SceneParser {
                             );
                             scene.addLight(parallelLight);
                             break;
-                        case "point_light": // TODO TEST
-                            color = (Element) light.getElementsByTagName("color").item(0);
-                            position = (Element) light.getElementsByTagName("position").item(0);
-                            PointLight pointLight = new PointLight(
-                                    parseColor(color),
-                                    parseVec3(position)
-                            );
-                            scene.addLight(pointLight);
+                        case "point_light":
                             break;
-                        case "spot_light": // TODO TEST
-                            color = (Element) light.getElementsByTagName("color").item(0);
+                        case "spot_light":
                             position = (Element) light.getElementsByTagName("position").item(0);
                             direction = (Element) light.getElementsByTagName("direction").item(0);
                             falloff = (Element) light.getElementsByTagName("falloff").item(0);
@@ -160,7 +147,6 @@ public class SceneParser {
                             );
                             scene.addLight(spotLight);
                             break;
-                        default: throw new RuntimeException("Unknown light type: " + light.getNodeName());
                     }
                 }
             }
@@ -322,7 +308,7 @@ public class SceneParser {
     }
 
     public static void main(String[] args) {
-        Scene scene = SceneParser.parseXML(example5);
+        Scene scene = SceneParser.parseXML(example2);
         System.out.println(scene.toString());
     }
 }
