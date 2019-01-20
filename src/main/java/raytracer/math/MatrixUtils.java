@@ -23,10 +23,10 @@ public class MatrixUtils {
         return result;
     }
 
-    public static Matrix CameraToWorld(Vector3 rotation, Vector3 translation) {
+    public static Matrix cameraToWorld(Vector3 rotation, Vector3 translation) {
         Matrix rotMat = fromRotation(rotation);
         Matrix traMat = fromTranslation(translation);
-        return rotMat.multiply(traMat);
+        return traMat.multiply(rotMat);
     }
 
     /**
@@ -69,20 +69,27 @@ public class MatrixUtils {
         return result;
     }
 
-    // TODO check
+    /**
+     * Returns a complete rotation matrix.
+     * @param rotation xRot yRot zRot
+     * @return rotmat
+     */
     public static Matrix fromRotation(Vector3 rotation) {
         Matrix rX = fromRotationX(rotation.getX());
         Matrix rY = fromRotationY(rotation.getY());
         Matrix rZ = fromRotationZ(rotation.getZ());
 
-        return rX.multiply(rY).multiply(rZ);
+        Matrix result = rY.multiply(rZ);
+        result = rX.multiply(result);
+
+        return result;
     }
 
     /**
      * Returns a rotation matrix around the x-Axis.
      * Form:
-     * cos(a)   0    sin(a)     0
-     * 0        1   -sin(a)     0
+     * 1        0       0       0
+     * 0    cos(a)  -sin(a)     0
      * 0    sin(a)   cos(a)     0
      * 0        0       0       1
      *
@@ -90,16 +97,15 @@ public class MatrixUtils {
      * @return RotationX.
      */
     public static Matrix fromRotationX(double alpha) {
-        Matrix result = Matrix.identity(4);
         double sinA = Math.sin(Math.toRadians(alpha));
         double cosA = Math.cos(Math.toRadians(alpha));
 
-        result.set(2,2, cosA);
-        result.set(2,3,-sinA);
-        result.set(3,2,sinA);
-        result.set(3,3,cosA);
-
-        return result;
+        return new Matrix(
+                1,0,0,0,
+                0,cosA,-sinA,0,
+                0,sinA,cosA,0,
+                0,0,0,1
+        );
     }
 
     /**
@@ -114,16 +120,15 @@ public class MatrixUtils {
      * @return RotationY.
      */
     public static Matrix fromRotationY(double alpha) {
-        Matrix result = Matrix.identity(4);
         double sinA = Math.sin(Math.toRadians(alpha));
         double cosA = Math.cos(Math.toRadians(alpha));
 
-        result.set(1,1, cosA);
-        result.set(1,3,sinA);
-        result.set(3,1,-sinA);
-        result.set(3,3,cosA);
-
-        return result;
+        return new Matrix(
+                cosA,0,sinA,0,
+                0,1,0,0,
+                -sinA,0,cosA,0,
+                0,0,0,1
+        );
     }
 
     /**
@@ -137,16 +142,15 @@ public class MatrixUtils {
      * @return RotationZ.
      */
     public static Matrix fromRotationZ(double alpha) {
-        Matrix result = Matrix.identity(4);
         double sinA = Math.sin(Math.toRadians(alpha));
         double cosA = Math.cos(Math.toRadians(alpha));
 
-        result.set(1,1, cosA);
-        result.set(1,2,-sinA);
-        result.set(2,1,sinA);
-        result.set(2,2,cosA);
-
-        return result;
+        return new Matrix(
+                cosA, -sinA, 0, 0,
+                sinA, cosA, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+        );
     }
 
     public static void main(String[] args) {

@@ -49,7 +49,7 @@ public class Matrix {
     public Matrix multiply(Matrix mat) throws RaytracerMathException {
         // inner dimension check
         if (this.cols != mat.rows)
-            throw new RaytracerMathException("Matrix::multiply: Incompatible rows and colums!");
+            throw new RaytracerMathException("Matrix::multiply: Incompatible inner dimension!");
         Matrix result = new Matrix(this.rows, mat.cols);
 
         for (int i = 0; i < this.rows; i++) {
