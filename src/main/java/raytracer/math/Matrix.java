@@ -47,14 +47,20 @@ public class Matrix {
      * @throws RaytracerMathException When the rows and columns are mismatched.
      */
     public Matrix multiply(Matrix mat) throws RaytracerMathException {
-        if (this.rows != mat.rows || this.cols != mat.cols)
+        // inner dimension check
+        if (this.cols != mat.rows)
             throw new RaytracerMathException("Matrix::multiply: Incompatible rows and colums!");
-        Matrix result = new Matrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < rows; j++) {
-                result.data[i][j] = data[i][j] * mat.data[i][j];
+        Matrix result = new Matrix(this.rows, mat.cols);
+
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < mat.cols; j++) {
+                for (int k = 0; k < this.cols; k++) {
+                    //System.out.println("Setting [" + i + "," + j + "]");
+                    result.data[i][j] += data[i][k] * mat.data[k][j];
+                }
             }
         }
+
         return result;
     }
 
@@ -287,6 +293,19 @@ public class Matrix {
         this.rows = data.length;
         this.cols = data[0].length;
         this.data = data;
+    }
+
+    public Matrix(double a1, double a2, double a3, double a4,
+                  double a5, double a6, double a7, double a8,
+                  double a9, double a10, double a11, double a12,
+                  double a13, double a14, double a15, double a16) {
+        rows = 4;
+        cols = 4;
+        data = new double[rows][cols];
+        data[0][0] = a1; data[0][1] = a2; data[0][2] = a3; data[0][3] = a4;
+        data[1][0] = a5; data[1][1] = a6; data[1][2] = a7; data[1][3] = a8;
+        data[2][0] = a9; data[2][1] = a10; data[2][2] = a11; data[2][3] = a12;
+        data[3][0] = a13; data[3][1] = a14; data[3][2] = a15; data[3][3] = a16;
     }
 
     @Override

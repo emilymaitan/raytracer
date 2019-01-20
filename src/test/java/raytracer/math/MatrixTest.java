@@ -24,7 +24,7 @@ public class MatrixTest {
         double[][] expected2 = { { 2, 0, 0 }, { -2, -4, -6 }, { 2, 4, 6} }; // * -2
         assertEquals(new Matrix(expected2), operand2.multiply(-2));
 
-        double[][] expected = { { -1, 0, 0 }, { 0, 0, 0 }, { -1, -2, -3} };
+        double[][] expected = { { -2, -2, -3 }, { 0, 0, 0 }, { -1, 0, 0} };
         assertEquals(new Matrix(expected), operand1.multiply(operand2));
     }
 

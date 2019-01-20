@@ -1,5 +1,7 @@
 package raytracer.math;
 
+import raytracer.graphics.trafo.Transformation;
+
 /**
  * Generates Matrices for typical graphics applications.
  * Inspired by the source code of glMatrix: http://glmatrix.net/docs/mat4.js.html
@@ -148,7 +150,13 @@ public class MatrixUtils {
     }
 
     public static void main(String[] args) {
-        Matrix test = fromTranslation(new Vector3(2,3,4));
-        System.out.println(test.multiply4x4(new Vector4(3,4,5,6)));
+        Transformation t = new Transformation(
+                new Vector3(0.5,0.0,0.0), // translation
+                new Vector3(1.0,1.0,1.0), // scale
+                new Vector3(0.0,0.0,0.0)  // rotation
+        );
+        System.out.println(
+                fromTranslation(new Vector3(3,3,3))
+                        .multiply(fromScale(new Vector3(2,2,2))));
     }
 }
