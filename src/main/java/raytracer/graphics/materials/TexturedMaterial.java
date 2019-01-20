@@ -15,7 +15,7 @@ public class TexturedMaterial extends Material {
 
     @Override
     public Color getMaterialcolor() {
-        return null; // TODO do some texture calculations
+        return Color.CYAN; // TODO do some texture calculations
     }
 
     @Override

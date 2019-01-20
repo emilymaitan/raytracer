@@ -74,9 +74,9 @@ public class Raytracer {
 
     public static void main(String[] args) {
         Scene scene = SceneParser.parseXML(SceneParser.example3);
-        BufferedImage image = renderRaycolorAsImage(500,500);
-        //BufferedImage image = renderSceneAsImage(scene);
-        ImageWriter.writeImage(image, "png", "rayToColor");
+        //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
+        BufferedImage image = renderSceneAsImage(scene);
+        ImageWriter.writeImage(image, "png", "scene");
     }
 
     public static BufferedImage renderRaycolorAsImage(int resX, int resY) {

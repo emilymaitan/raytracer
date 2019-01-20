@@ -21,6 +21,15 @@ public class Vector4 {
         );
     }
 
+    public Vector4 subtract(Vector4 vec) {
+        return new Vector4(
+                a - vec.a,
+                b - vec.b,
+                c - vec.c,
+                d - vec.d
+        );
+    }
+
     /**
      * Multiplies a vector by a scalar (element-wise).
      * @param scalar the scalar

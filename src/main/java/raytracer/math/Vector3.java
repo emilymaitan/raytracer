@@ -158,6 +158,12 @@ public class Vector3 {
         this.z = vector.z;
     }
 
+    public Vector3(Vector4 vec) {
+        this.x = vec.getA();
+        this.y = vec.getB();
+        this.z = vec.getC();
+    }
+
     @Override
     public boolean equals(Object obj) {
         // if the other object is null, they are not equal

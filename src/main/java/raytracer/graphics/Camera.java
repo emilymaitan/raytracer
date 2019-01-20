@@ -1,7 +1,10 @@
 package raytracer.graphics;
 
 import raytracer.image.Resolution;
+import raytracer.math.Matrix;
+import raytracer.math.MatrixUtils;
 import raytracer.math.Vector3;
+import raytracer.math.Vector4;
 
 // TUTORIALS:
 // Shirley/Marsh
@@ -39,6 +42,7 @@ public class Camera {
     // private CameraMode camMode = CAMERAMODE_PERSPECTIVE;
 
 
+    // Method by Marshner, Shirley
     public Ray generateRay(double u, double v) {
 
         Vector3 view = w().multiply(imPlaneDistance*d()).add(u().multiply(u)).add(v().multiply(v));
@@ -50,6 +54,7 @@ public class Camera {
         );
     }
 
+    // by scratch-a-pixel
     // raster space to world space
     public Ray generateRay(int pixelX, double pixelY) {
         // first, we transform the raster space into normalized device coordinates
@@ -69,12 +74,17 @@ public class Camera {
         double xCamera = xScreen * res.aspectRatio() * Math.tan(Math.toRadians(horizontalFOV));
         double yCamera = yScreen * Math.tan(Math.toRadians(horizontalFOV));
 
-        // the final coordinate on the image plane is now:
+        // the final coordinates on the image plane are now:
         Vector3 pixelOnPlane = new Vector3(xCamera, yCamera, imPlaneDistance);
 
+        // Camera - to - World
+        Matrix camToWorld = MatrixUtils.CameraToWorld(new Vector3(), position);
+        Vector4 wPos = camToWorld.multiply4x4(new Vector4(position,1));
+        Vector4 wDir = new Vector4(pixelOnPlane,1).subtract(wPos);
+
         return new Ray(
-                position,
-                pixelOnPlane.subtract(position)
+                new Vector3(wPos),
+                new Vector3(wDir)
         );
     }
 

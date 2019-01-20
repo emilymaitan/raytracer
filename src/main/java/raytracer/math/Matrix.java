@@ -1,6 +1,9 @@
 package raytracer.math;
 
 // code inspired by: https://introcs.cs.princeton.edu/java/95linear/Matrix.java.html
+
+import raytracer.Raytracer;
+
 /**
  * Represents Matrices and allows operations on them.
  */
@@ -53,6 +56,29 @@ public class Matrix {
             }
         }
         return result;
+    }
+
+    public Vector3 multiply3x3(Vector3 vec) throws RaytracerMathException {
+        if (rows != 3 && cols != 3) throw new RaytracerMathException("Illegal matrix dimensions!");
+        double x = vec.getX(); double y = vec.getY(); double z = vec.getZ(); // makes it shorter
+        // 3x3 Matrix * 3x1 Vector --> 3x1 Vector
+        return new Vector3(
+                at(1,1)*x + at(1,2)*y + at(1,3)*z,
+                at(2,1)*x + at(2,2)*y + at(2,3)*z,
+                at(3,1)*x + at(3,2)*y + at(3,3)*z
+        );
+    }
+
+    public Vector4 multiply4x4(Vector4 vec) throws RaytracerMathException {
+        if (rows != 4 && cols != 4) throw new RaytracerMathException("Illegal matrix dimensions!");
+        double a = vec.getA(); double b = vec.getB(); double c = vec.getC(); double d = vec.getD(); // makes it shorter
+        // 4x4 Matrix * 4x1 Vector --> 4x1 Vector
+        return new Vector4(
+                at(1,1)*a + at(1,2)*b + at(1,3)*c + at(1,4)*d,
+                at(2,1)*a + at(2,2)*b + at(2,3)*c + at(2,4)*d,
+                at(3,1)*a + at(3,2)*b + at(3,3)*c + at(3,4)*d,
+                at(4,1)*a + at(4,2)*b + at(4,3)*c + at(4,4)*d
+        );
     }
 
     /**
@@ -178,7 +204,7 @@ public class Matrix {
             };
             return new Matrix(data);
         } else if (rows == 3) {
-            throw new RaytracerMathException("Not implemented!"); // TODO
+            throw new RaytracerMathException("Not implemented!"); // TODO?
         } else if (rows == 4) {
             // directly adapted from: http://glmatrix.net/docs/mat4.js.html#line256
             // I chose to copy this code directly because it is faster than a nested approach (like for determinant).

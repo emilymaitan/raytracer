@@ -21,6 +21,12 @@ public class MatrixUtils {
         return result;
     }
 
+    public static Matrix CameraToWorld(Vector3 rotation, Vector3 translation) {
+        Matrix rotMat = fromRotation(rotation);
+        Matrix traMat = fromTranslation(translation);
+        return rotMat.multiply(traMat);
+    }
+
     /**
      * Returns a translation matrix from a translation vector.
      * The form is:
@@ -143,6 +149,6 @@ public class MatrixUtils {
 
     public static void main(String[] args) {
         Matrix test = fromTranslation(new Vector3(2,3,4));
-        System.out.println(test.invert());
+        System.out.println(test.multiply4x4(new Vector4(3,4,5,6)));
     }
 }
