@@ -1,5 +1,6 @@
 package raytracer.graphics;
 
+import raytracer.graphics.trafo.Transformation;
 import raytracer.image.Resolution;
 import raytracer.math.Matrix;
 import raytracer.math.MatrixUtils;
@@ -41,6 +42,8 @@ public class Camera {
 
     // private CameraMode camMode = CAMERAMODE_PERSPECTIVE;
 
+    private Transformation transformation = new Transformation();
+
 
     // Method by Marshner, Shirley
     public Ray generateRay(double u, double v) {
@@ -75,12 +78,13 @@ public class Camera {
         double yCamera = yScreen * Math.tan(Math.toRadians(horizontalFOV));
 
         // the final coordinates on the image plane are now:
-        Vector3 pixelOnPlane = new Vector3(xCamera, yCamera, imPlaneDistance);
+        Vector3 pixelOnPlane = new Vector3(xCamera, yCamera, -1);
 
         // Camera - to - World
-        Matrix camToWorld = MatrixUtils.CameraToWorld(new Vector3(), position);
+        Matrix camToWorld = MatrixUtils.cameraToWorld(new Vector3(), new Vector3());
         Vector4 wPos = camToWorld.multiply4x4(new Vector4(position,1));
-        Vector4 wDir = new Vector4(pixelOnPlane,1).subtract(wPos);
+        Vector4 wPixel = camToWorld.multiply4x4(new Vector4(pixelOnPlane, 1));
+        Vector4 wDir = wPixel.subtract(wPos);
 
         return new Ray(
                 new Vector3(wPos),

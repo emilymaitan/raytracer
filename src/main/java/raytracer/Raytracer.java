@@ -12,6 +12,7 @@ import raytracer.graphics.surfaces.Mesh;
 import raytracer.graphics.surfaces.Sphere;
 import raytracer.graphics.surfaces.Surface;
 import raytracer.graphics.surfaces.obj.TriangleFace;
+import raytracer.graphics.trafo.Transformation;
 import raytracer.io.ImageWriter;
 import raytracer.io.ObjParser;
 import raytracer.io.SceneParser;
@@ -134,6 +135,7 @@ public class Raytracer {
                 // trace this ray
                 Color color = traceRay(scene, ray);
                 //Color color = traceDebugMesh(ray, meshData);
+                //Color color = traceDebugSphere(ray);
 
                 // store the resulting color in the pixel
                 image.setRGB(i, j, color.getRGB());
@@ -175,15 +177,19 @@ public class Raytracer {
                         1,
                         Color.CYAN
                 ),
-                null,
-                new Vector3(0,0,-2),
+                new Transformation(
+                        new Vector3(0.0,0.0,0.0), // translation
+                        new Vector3(1,1,1), // scale
+                        new Vector3(0.0,0.0,0.0)  // rotation
+                ),
+                new Vector3(0,0,-3),
                 1
         );
 
         double t = Double.MAX_VALUE-1;
         double tt = sphere.intersect(ray);
         if ((tt > 0) && (tt < t)) {
-            return ((SolidMaterial)sphere.getMaterial()).getColor();
+            color = ((SolidMaterial)sphere.getMaterial()).getColor();
         }
 
         return color;
@@ -255,6 +261,8 @@ public class Raytracer {
                     shadowed = true; break; // TODO adjust for translucent things
                 }
             }
+
+            //if (shadowed) return Color.BLACK; // TODO DO
 
             // Compute color
             Color phong = closestSurface.illuminate(

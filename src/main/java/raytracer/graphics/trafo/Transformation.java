@@ -1,5 +1,8 @@
 package raytracer.graphics.trafo;
 
+import raytracer.math.MathUtils;
+import raytracer.math.Matrix;
+import raytracer.math.MatrixUtils;
 import raytracer.math.Vector3;
 
 public class Transformation {
@@ -17,10 +20,26 @@ public class Transformation {
      */
     private Vector3 rotationDegrees;
 
+    private Matrix objToWorld; // pre-computed object-to-world matrix
+
+    private void calculateObjToWorld () {
+        this.objToWorld = MatrixUtils.ObjectToWorldspace(scale, rotationDegrees, translation);
+    }
+
+    public Transformation() {
+        this.translation = new Vector3();
+        this.scale = new Vector3(1,1,1);
+        this.rotationDegrees = new Vector3();
+        calculateObjToWorld();
+    }
+
     public Transformation(Vector3 translation, Vector3 scale, Vector3 rotationDegrees) {
-        this.translation = translation;
-        this.scale = scale;
-        this.rotationDegrees = rotationDegrees;
+        this.translation        = translation       == null ? new Vector3() : translation;
+        this.scale              = scale             == null ? new Vector3() : scale;
+        this.rotationDegrees    = rotationDegrees   == null ? new Vector3() : rotationDegrees;
+
+        // pre-compute the matrix from object-space to world
+        calculateObjToWorld();
     }
 
     @Override
@@ -29,6 +48,7 @@ public class Transformation {
                 "translation=" + translation +
                 ", scale=" + scale +
                 ", rotationDegrees=" + rotationDegrees +
+                "\nobjToWorld:\n" + objToWorld +
                 ']';
     }
 
@@ -42,5 +62,24 @@ public class Transformation {
 
     public Vector3 getRotationDegrees() {
         return rotationDegrees;
+    }
+
+    public void setTranslation(Vector3 translation) {
+        this.translation = translation;
+        calculateObjToWorld();
+    }
+
+    public void setScale(Vector3 scale) {
+        this.scale = scale;
+        calculateObjToWorld();
+    }
+
+    public void setRotationDegrees(Vector3 rotationDegrees) {
+        this.rotationDegrees = rotationDegrees;
+        calculateObjToWorld();
+    }
+
+    public Matrix getObjToWorld() {
+        return objToWorld;
     }
 }

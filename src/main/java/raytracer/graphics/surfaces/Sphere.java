@@ -7,6 +7,7 @@ import raytracer.graphics.materials.SolidMaterial;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.math.MathUtils;
 import raytracer.math.Vector3;
+import raytracer.math.Vector4;
 
 import java.awt.Color;
 
@@ -24,6 +25,8 @@ public class Sphere extends Surface {
      */
     private Vector3 position;
 
+    private Vector3 worldPosition; // pre-computed
+
     // Sources:
     // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
     // https://www.youtube.com/watch?v=vjeU6aOntmY
@@ -32,7 +35,7 @@ public class Sphere extends Surface {
     public double intersect(Ray ray) {
         // sphere equation: x^2 + y^2 + z^2 = r^2
         // intersection equation: (ray - spherecenter)^2 + r^2 = 0
-        Vector3 originOffset = ray.getOriginPoint().subtract(this.position);
+        Vector3 originOffset = ray.getOriginPoint().subtract(this.worldPosition); // TODO!
         double a = ray.getDirection().dot(ray.getDirection());
         double b = 2 * ray.getDirection().dot(originOffset);
         double c = originOffset.dot(originOffset) - this.radius;
@@ -94,6 +97,12 @@ public class Sphere extends Surface {
         super(material, transformation);
         this.position = position;
         this.radius = radius;
+
+        if (transformation != null) {
+            worldPosition = new Vector3(transformation.getObjToWorld().multiply4x4(new Vector4(position,1)));
+        } else {
+            worldPosition = position;
+        }
     }
 
     @Override
