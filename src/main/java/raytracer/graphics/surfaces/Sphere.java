@@ -4,6 +4,7 @@ import raytracer.graphics.Ray;
 import raytracer.graphics.illumination.Phong;
 import raytracer.graphics.materials.Material;
 import raytracer.graphics.materials.SolidMaterial;
+import raytracer.graphics.materials.TexturedMaterial;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.math.MathUtils;
 import raytracer.math.Vector3;
@@ -35,6 +36,8 @@ public class Sphere extends Surface {
         // intersection equation: (ray - spherecenter)^2 + r^2 = 0
         // TODO: worldPosition is bandaid fix, only works for translation!
         Vector3 originOffset = ray.getOriginPoint().subtract(worldPosition());
+
+
         double a = ray.getDirection().dot(ray.getDirection());
         double b = 2 * ray.getDirection().dot(originOffset);
         double c = originOffset.dot(originOffset) - this.radius; // TODO fix "world radius"
@@ -85,6 +88,21 @@ public class Sphere extends Surface {
         // the normal is simply the vector from the sphere's middle point
         // to the point on the surface
         return at.subtract(worldPosition()).normalize();
+    }
+
+    @Override
+    public float[] getTextureCoordinates(Vector3 at) {
+        float[] uv = new float[2];
+
+        // Formula taken from: https://en.wikipedia.org/wiki/UV_mapping
+        Vector3 d = at.subtract(position).normalize();
+        uv[0] = (float)(0.5 + ((Math.atan2(d.getZ(), d.getX())/(2*Math.PI))));
+        uv[1] = (float)(0.5 - ((Math.asin(d.getY())/Math.PI)));
+
+        if(uv[0] > 1 || uv[0] < 0 || uv[1] > 1 || uv[1] < 0)
+            throw new RuntimeException("illegal uv");
+
+        return uv;
     }
 
     private boolean isPointOnSphere(Vector3 p) {

@@ -1,6 +1,8 @@
 package raytracer.graphics.materials;
 
 import raytracer.graphics.illumination.Phong;
+import raytracer.graphics.surfaces.Surface;
+import raytracer.math.Vector3;
 
 import java.awt.*;
 
@@ -23,7 +25,7 @@ public abstract class Material {
      */
     protected double refraction;
 
-    public abstract Color getMaterialcolor();
+    public abstract Color getMaterialColor(Surface s, Vector3 at);
 
     public Material() {
         phong = new Phong();

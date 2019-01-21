@@ -63,6 +63,16 @@ public class SceneParser {
         try {
             // ============================ SETUP ========================== //
             File xmlFile = new File(xmlPath);
+
+            // check if file exists
+            if (!xmlFile.exists() || xmlFile.isDirectory()) {
+                throw new RuntimeException("XML file does not exist: " + xmlFile.getAbsolutePath());
+            }
+            // get a reference to the xml directory for later
+            String xmlDir = xmlFile.getAbsolutePath().substring(
+                    0, xmlFile.getAbsolutePath().lastIndexOf(File.separator)
+            );
+
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             dbFactory.setValidating(true); // validate against schema TODO
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -172,7 +182,7 @@ public class SceneParser {
                     position = (Element) sphere.getElementsByTagName("position").item(0);
 
                     // there may be at most one material
-                    Material material = parseMaterial(sphere);
+                    Material material = parseMaterial(sphere, xmlDir);
 
                     // there may be at most one transformation
                     Transformation transform = parseTransform(sphere);
@@ -200,18 +210,14 @@ public class SceneParser {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     // parse out all data from the xml
                     Element mesh = (Element) node;
-                    Material material = parseMaterial(mesh);
+                    Material material = parseMaterial(mesh, xmlDir);
                     Transformation transformation = parseTransform(mesh);
 
                     // parse out the mesh information from the OBJ file
-                    String objDir = xmlFile.getAbsolutePath().substring(
-                            0, xmlFile.getAbsolutePath().lastIndexOf(File.separator)
-                    );
-
                     String objName = mesh.getAttribute("name");
                     ArrayList<TriangleFace> objData;
                     if (!parsedOBJs.containsKey(objName)) {
-                        objData = ObjParser.parseObj(objDir+File.separator+objName);
+                        objData = ObjParser.parseObj(xmlDir+File.separator+objName);
                         parsedOBJs.put(objName, objData);
                     } else {
                         objData = parsedOBJs.get(objName);
@@ -219,7 +225,7 @@ public class SceneParser {
 
                     //System.out.println("OBJ @ " + objDir + File.separator + mesh.getAttribute("name"));
                     Mesh m = new Mesh(
-                            parseMaterial(mesh),
+                            parseMaterial(mesh, xmlDir),
                             parseTransform(mesh),
                             objName,
                             objData
@@ -254,7 +260,7 @@ public class SceneParser {
         );
     }
 
-    private static Material parseMaterial(Element element) {
+    private static Material parseMaterial(Element element, String xmlDir) {
         Element material = (Element) element.getElementsByTagName("material_solid").item(0);
 
         if (material == null) {
@@ -288,7 +294,8 @@ public class SceneParser {
                 Double.valueOf(reflectance.getAttribute("r")),
                 Double.valueOf(transmittance.getAttribute("t")),
                 Double.valueOf(refraction.getAttribute("iof")),
-                texture.getAttribute("name")
+                texture.getAttribute("name"),
+                ImageReader.readImage(xmlDir + File.separator + texture.getAttribute("name"))
         );
 
         throw new RuntimeException("Unknown Material Type!");
@@ -316,7 +323,7 @@ public class SceneParser {
     }
 
     public static void main(String[] args) {
-        Scene scene = SceneParser.parseXML(example3);
+        Scene scene = SceneParser.parseXML(debugScene);
         System.out.println(scene.toString());
     }
 }

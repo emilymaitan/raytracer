@@ -1,6 +1,8 @@
 package raytracer.graphics.materials;
 
 import raytracer.graphics.illumination.Phong;
+import raytracer.graphics.surfaces.Surface;
+import raytracer.math.Vector3;
 
 import java.awt.*;
 
@@ -14,7 +16,7 @@ public class SolidMaterial extends Material {
     }
 
     @Override
-    public Color getMaterialcolor() {
+    public Color getMaterialColor(Surface s, Vector3 at) {
         return color;
     }
 

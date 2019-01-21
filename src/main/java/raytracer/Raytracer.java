@@ -8,21 +8,16 @@ import raytracer.graphics.lights.ParallelLight;
 import raytracer.graphics.lights.PointLight;
 import raytracer.graphics.lights.SpotLight;
 import raytracer.graphics.materials.SolidMaterial;
-import raytracer.graphics.surfaces.Mesh;
 import raytracer.graphics.surfaces.Sphere;
 import raytracer.graphics.surfaces.Surface;
-import raytracer.graphics.surfaces.obj.TriangleFace;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.io.ImageWriter;
-import raytracer.io.ObjParser;
 import raytracer.io.SceneParser;
 import raytracer.math.MathUtils;
 import raytracer.math.Vector3;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
 
 public class Raytracer {
 
@@ -126,7 +121,7 @@ public class Raytracer {
         // TODO remove these
         //scene.getSurfaces().get(1).getTransformation().translateBy(new Vector3(1,1,-1));
         //scene.getSurfaces().get(1).getTransformation().setScale(new Vector3(2,2,2));
-        scene.getCamera().transformation.translateBy(new Vector3(0,0,5));
+        //scene.getCamera().transformation.translateBy(new Vector3(0,0,5));
 
         // for each pixel in this image, do...
         for (int i = 0; i < camera.getRes().getHorizontal(); i++) {
@@ -178,7 +173,7 @@ public class Raytracer {
     }
 
     // https://www.youtube.com/watch?v=m_IeoWvSbQI
-    public static Color traceRay(Scene scene, Ray ray, int depth, Vector3 reflectionPoint) {
+    public static Color traceRay(Scene scene, Ray ray, int depth, Vector3 currentView) {
         //initialize the color to black
         Color color = Color.BLACK;
 
@@ -202,7 +197,8 @@ public class Raytracer {
 
         if (closestSurface == null) { // if no intersection was found
             // add the background color
-            return scene.getBackgroundColor();
+            //return scene.getBackgroundColor();
+            return ray.toColor(1);
         }
 
         // An intersection exists! Now, we compute the color.
@@ -211,13 +207,13 @@ public class Raytracer {
 
         // Pre-calculate important variables at the reflection point.
         Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos);
-        Vector3 surfToView = reflectionPoint.subtract(intersectionPos).normalize();
+        Vector3 surfToView = currentView.subtract(intersectionPos).normalize();
 
         // We need to sum up red, green and blue over all lights:
         int r = 0, g = 0, b = 0;
 
         // First, factor in the ambient light.
-        Color amb = closestSurface.illuminateAmbient();
+        Color amb = closestSurface.illuminateAmbient(intersectionPos);
         r += amb.getRed();
         g += amb.getGreen();
         b += amb.getBlue();
@@ -252,11 +248,13 @@ public class Raytracer {
                 }
             }
 
-            if (shadowed) continue;
+            if (shadowed) return Color.CYAN;
+            //if (shadowed) continue;
 
             // Compute color
             Color phong = closestSurface.illuminate(
                     scene.getLights().get(i).getColor(),
+                    intersectionPos,
                     surfaceToLight,
                     surfaceNormal,
                     surfToView,
@@ -283,7 +281,7 @@ public class Raytracer {
 
             // ############# Trace it #############
             // Now we trace this ray - recursively!
-            Color reflColor = traceRay(scene, reflRay, depth+1, intersectionPos);
+            Color reflColor = traceRay(scene, reflRay, depth+1, reflRay.getOriginPoint());
 
             // ############# add contribution to output #############
             float rf = (float)closestSurface.getMaterial().getReflectance();

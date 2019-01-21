@@ -1,21 +1,34 @@
 package raytracer.graphics.materials;
 
 import raytracer.graphics.illumination.Phong;
+import raytracer.graphics.surfaces.Surface;
+import raytracer.math.Vector3;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class TexturedMaterial extends Material {
 
-    private String texture;
+    private String textureName;
+    private BufferedImage texture;
 
-    public TexturedMaterial(Phong phong, double reflectance, double transmittance, double refraction, String texture) {
+    // Shirley, Marshner pg.244
+    private Color textureLookup(float u, float v) {
+        int i = Math.round(u* texture.getWidth() -0.5f);
+        int j = Math.round(v * texture.getHeight() - 0.5f);
+        return new Color(texture.getRGB(i, j));
+    }
+
+    public TexturedMaterial(Phong phong, double reflectance, double transmittance, double refraction, String textureName, BufferedImage texture) {
         super(phong, reflectance, transmittance, refraction);
+        this.textureName = textureName;
         this.texture = texture;
     }
 
     @Override
-    public Color getMaterialcolor() {
-        return Color.CYAN; // TODO do some texture calculations
+    public Color getMaterialColor(Surface s, Vector3 at) {
+        float[] uv = s.getTextureCoordinates(at);
+        return textureLookup(uv[0],uv[1]);
     }
 
     @Override

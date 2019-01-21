@@ -26,13 +26,15 @@ public abstract class Surface {
      */
     public abstract Vector3 surfaceNormal(Vector3 at);
 
-    public Color illuminate(Color lightColor, Vector3 surfToLight, Vector3 surfToView, Vector3 surfNormal, boolean includeAmbient) {
-        return material.getPhong().computeIllumination(material.getMaterialcolor(),lightColor,surfToLight,surfToView,surfNormal,includeAmbient);
+    public Color illuminate(Color lightColor, Vector3 at, Vector3 surfToLight, Vector3 surfToView, Vector3 surfNormal, boolean includeAmbient) {
+        return material.getPhong().computeIllumination(material.getMaterialColor(this, at),lightColor,surfToLight,surfToView,surfNormal,includeAmbient);
     }
 
-    public Color illuminateAmbient() {
-        return material.getPhong().computeAmbient(material.getMaterialcolor());
+    public Color illuminateAmbient(Vector3 at) {
+        return material.getPhong().computeAmbient(material.getMaterialColor(this, at));
     }
+
+    public abstract float[] getTextureCoordinates(Vector3 at);
 
     public Surface(Material material, Transformation transformation) {
         this.material = material;

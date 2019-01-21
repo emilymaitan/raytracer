@@ -19,12 +19,21 @@ type in the following commands:
 For Windows, use `gradlew.bat` instead.
 
 # Known Bugs #
-- Camera transformations are not correctly implemented. 
+- Camera transformations are not correctly implemented.
 
-# Features # 
-- Parse and validate XML scene files. 
-- Create images of scene files and ray directions. 
-- Phong illumination. 
+# Fixed Bugs #
+- Phong illumination now correctly calculates specular highlights.
+- All light sources are now correctly parsed and parallel light has been fixed.
+- Matrix multiplication now works properly, and non-square multiplication is supported!
+- Proper error message for not existing files!
+
+# New Features # 
+- Parse Triangles. 
+- Shadows.
+- Basic Reflection.
+
+# Sources for this project
+- "Shirley/Marshner": Fundamentals of Computer Graphics 
 
 # Troubleshooting
 
@@ -33,10 +42,6 @@ Make sure that you have your JAVA_HOME set, and the wrapper file lies at gradle/
 The gradlew script is auto-generated but very verbose, check its error messages!
 
 # Q&A
-
-**Some functions are implemented, but not used! Why?**
-I'm using this same project for Lab4b. I didn't clean up the debug functions, 
-nor the already existing code for upcoming features (shadows, more Surface types, etc.).
 
 **Why JAVA?**
 Several reasons! Most importantly, JAVA is the language I have most experience with. 

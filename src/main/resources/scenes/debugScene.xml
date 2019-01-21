@@ -21,8 +21,33 @@
         </parallel_light>
     </lights>
     <surfaces>
-        <!-- a box -->
-        <mesh name="box.obj">
+        <!-- debug sphere -->
+
+        <sphere radius="1.0">
+            <position x="3.0" y="0.0" z="-3.0"/>
+            <material_solid>
+                <color r="0.17" g="0.18" b="0.50"/>
+                <phong ka="0.3" kd="0.9" ks="1.0" exponent="200"/>
+                <reflectance r="0.2"/>
+                <transmittance t="0.0"/>
+                <refraction iof="2.3"/>
+            </material_solid>
+        </sphere>
+
+        <sphere radius="1.0">
+            <position x="1.0" y="1.0" z="-2.0"/>
+            <material_textured>
+                <texture name="mramor6x6.png"/>
+                <phong ka="0.3" kd="0.9" ks="1.0" exponent="200"/>
+                <reflectance r="0"/>
+                <transmittance t="0"/>
+                <refraction iof="0"/>
+            </material_textured>
+        </sphere>
+
+        <!-- debug obj -->
+
+        <mesh name="plane_small.obj">
             <material_solid>
                 <color r="0.17" g="0.18" b="0.50"/>
                 <phong ka="0.3" kd="0.9" ks="1.0" exponent="20"/>
@@ -35,5 +60,6 @@
                 <scale x="1" y="1" z="1" />
             </transform>
         </mesh>
+
     </surfaces>
 </scene>

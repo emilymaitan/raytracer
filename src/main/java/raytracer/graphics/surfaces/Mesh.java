@@ -2,11 +2,13 @@ package raytracer.graphics.surfaces;
 
 import raytracer.graphics.Ray;
 import raytracer.graphics.materials.Material;
+import raytracer.graphics.materials.SolidMaterial;
 import raytracer.graphics.surfaces.obj.TriangleFace;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.math.MathUtils;
 import raytracer.math.Vector3;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Mesh extends Surface {
@@ -101,6 +103,11 @@ public class Mesh extends Surface {
 
         return f.getNormal().normalize();
         */
+    }
+
+    @Override
+    public float[] getTextureCoordinates(Vector3 at) {
+        return new float[2];
     }
 
     public Mesh(Material material, Transformation transformation, String name, ArrayList<TriangleFace> faces) {
