@@ -42,7 +42,7 @@ public class Camera {
 
     // private CameraMode camMode = CAMERAMODE_PERSPECTIVE;
 
-    private Transformation transformation = new Transformation();
+    public Transformation transformation = new Transformation();
 
 
     // Method by Marshner, Shirley
@@ -81,7 +81,7 @@ public class Camera {
         Vector3 pixelOnPlane = new Vector3(xCamera, yCamera, -1);
 
         // Camera - to - World
-        Matrix camToWorld = MatrixUtils.cameraToWorld(new Vector3(), new Vector3());
+        Matrix camToWorld = MatrixUtils.cameraToWorld(transformation.getRotationDegrees(), transformation.getTranslation());
         Vector4 wPos = camToWorld.multiply4x4(new Vector4(position,1));
         Vector4 wPixel = camToWorld.multiply4x4(new Vector4(pixelOnPlane, 1));
         Vector4 wDir = wPixel.subtract(wPos);

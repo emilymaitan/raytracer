@@ -25,8 +25,6 @@ public class Sphere extends Surface {
      */
     private Vector3 position;
 
-    private Vector3 worldPosition; // pre-computed
-
     // Sources:
     // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection
     // https://www.youtube.com/watch?v=vjeU6aOntmY
@@ -35,10 +33,11 @@ public class Sphere extends Surface {
     public double intersect(Ray ray) {
         // sphere equation: x^2 + y^2 + z^2 = r^2
         // intersection equation: (ray - spherecenter)^2 + r^2 = 0
-        Vector3 originOffset = ray.getOriginPoint().subtract(this.worldPosition); // TODO!
+        // TODO: worldPosition is bandaid fix, only works for translation!
+        Vector3 originOffset = ray.getOriginPoint().subtract(worldPosition());
         double a = ray.getDirection().dot(ray.getDirection());
         double b = 2 * ray.getDirection().dot(originOffset);
-        double c = originOffset.dot(originOffset) - this.radius;
+        double c = originOffset.dot(originOffset) - this.radius; // TODO fix "world radius"
         double[] solutions = MathUtils.solveQuadratic(a, b, c);
 
         double result = 0;
@@ -85,24 +84,22 @@ public class Sphere extends Surface {
 
         // the normal is simply the vector from the sphere's middle point
         // to the point on the surface
-        return at.subtract(position).normalize();
+        return at.subtract(worldPosition()).normalize();
     }
 
     private boolean isPointOnSphere(Vector3 p) {
-        Vector3 o = p.subtract(position);
+        Vector3 o = p.subtract(worldPosition());
         return (o.getX()*o.getX() + o.getY()*o.getY() + o.getZ()*o.getZ() - radius*radius) <= MathUtils.EPSILON;
+    }
+
+    public Vector3 worldPosition() {
+        return new Vector3(this.transformation.getObjToWorld().multiply4x4(new Vector4(position,1)));
     }
 
     public Sphere(Material material, Transformation transformation, Vector3 position, double radius) {
         super(material, transformation);
         this.position = position;
         this.radius = radius;
-
-        if (transformation != null) {
-            worldPosition = new Vector3(transformation.getObjToWorld().multiply4x4(new Vector4(position,1)));
-        } else {
-            worldPosition = position;
-        }
     }
 
     @Override

@@ -80,14 +80,27 @@ public class Mesh extends Surface {
         }
     }
 
-    private boolean isPointOnTriangle(Vector3 at) {
+    private boolean isPointOnTriangle(TriangleFace face, Vector3 at) {
         return true;
     }
 
     @Override
     public Vector3 surfaceNormal(Vector3 at) {
-        // todo checks with isPointOnTriangle
         return lastHit.getNormal().normalize();
+
+        /*
+        // on which triangle is this?
+        TriangleFace f = null;
+        for (TriangleFace face : faces) {
+            if (isPointOnTriangle(face, at)) {
+                f = face; break;
+            }
+        }
+
+        if (f == null) throw new RuntimeException("Point is not on any surface!");
+
+        return f.getNormal().normalize();
+        */
     }
 
     public Mesh(Material material, Transformation transformation, String name, ArrayList<TriangleFace> faces) {

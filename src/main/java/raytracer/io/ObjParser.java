@@ -58,7 +58,7 @@ public class ObjParser {
 
     public static void main(String[] args) {
         ArrayList<TriangleFace> faces = parseObj(
-                new File(SceneParser.class.getResource("/scenes/open_room.obj").getFile()).getAbsolutePath()
+                new File(SceneParser.class.getResource("/scenes/box.obj").getFile()).getAbsolutePath()
         );
 
         System.out.println(faces.toString());

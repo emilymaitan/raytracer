@@ -21,6 +21,7 @@ import raytracer.math.Vector3;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Raytracer {
@@ -74,7 +75,7 @@ public class Raytracer {
     } */
 
     public static void main(String[] args) {
-        Scene scene = SceneParser.parseXML(SceneParser.example3);
+        Scene scene = SceneParser.parseXML(SceneParser.debugScene);
         //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
         BufferedImage image = renderSceneAsImage(scene);
         ImageWriter.writeImage(image, "png", "scene");
@@ -122,19 +123,20 @@ public class Raytracer {
                 camera.getRes().getVertical(),
                 BufferedImage.TYPE_INT_ARGB);
 
-        // TODO remove
-        ArrayList<TriangleFace> meshData = ObjParser.parseObj("C:\\Users\\Emily\\3D Objects\\debug.obj");
+        // TODO remove these
+        //scene.getSurfaces().get(1).getTransformation().translateBy(new Vector3(1,1,-1));
+        //scene.getSurfaces().get(1).getTransformation().setScale(new Vector3(2,2,2));
+        scene.getCamera().transformation.translateBy(new Vector3(0,0,5));
 
         // for each pixel in this image, do...
         for (int i = 0; i < camera.getRes().getHorizontal(); i++) {
             for (int j = 0; j < camera.getRes().getVertical(); j++) {
                 // get a ray from the camera to this pixel
-                //Ray ray = camera.generateRay(i, j);
-                Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
+                Ray ray = camera.generateRay(i, j);
+                //Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
 
                 // trace this ray
-                Color color = traceRay(scene, ray);
-                //Color color = traceDebugMesh(ray, meshData);
+                Color color = traceRay(scene, ray, 0, scene.getCamera().getPosition());
                 //Color color = traceDebugSphere(ray);
 
                 // store the resulting color in the pixel
@@ -143,26 +145,6 @@ public class Raytracer {
         }
 
         return image;
-    }
-
-    public static Color traceDebugMesh(Ray ray, ArrayList<TriangleFace> meshData) {
-        Color color = Color.BLACK;
-
-        Mesh mesh = new Mesh(
-                new SolidMaterial(new Phong(),1,1,1,Color.CYAN),
-                null,
-                "plane.obj",
-                meshData
-        );
-
-        double t = Double.MAX_VALUE-1;
-        double tt = mesh.intersect(ray);
-        //System.out.println("tt: " + tt);
-        if ((tt > 0) && (tt < t)) {
-            return ((SolidMaterial)mesh.getMaterial()).getColor();
-        }
-
-        return color;
     }
 
     @Deprecated
@@ -196,9 +178,12 @@ public class Raytracer {
     }
 
     // https://www.youtube.com/watch?v=m_IeoWvSbQI
-    public static Color traceRay(Scene scene, Ray ray) {
+    public static Color traceRay(Scene scene, Ray ray, int depth, Vector3 reflectionPoint) {
         //initialize the color to black
         Color color = Color.BLACK;
+
+        // Check how deep into the recursion we are, and abort if we must.
+        if (depth > scene.getCamera().getMaxBounces()) return color;
 
         // find closest intersection i
         // For all objects in the scene, do an intersection test.
@@ -226,7 +211,7 @@ public class Raytracer {
 
         // Pre-calculate important variables at the reflection point.
         Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos);
-        Vector3 surfToView = scene.getCamera().getPosition().subtract(intersectionPos).normalize();
+        Vector3 surfToView = reflectionPoint.subtract(intersectionPos).normalize();
 
         // We need to sum up red, green and blue over all lights:
         int r = 0, g = 0, b = 0;
@@ -283,13 +268,29 @@ public class Raytracer {
             b += phong.getBlue();
         }
 
-        // TODO: if reflectiviy > 0
+        // TODO: if reflectivity > 0
         if (closestSurface.getMaterial().getReflectance() > 0) {
-            // TODO compute reflected ray
+            // ############# compute reflected ray #############
+            // Perfect reflection formula: 2*(n.l)n - l
+            Vector3 reflDir = surfaceNormal.multiply(
+                    2*Math.max(0, surfaceNormal.dot(surfToView))
+            ).subtract(surfToView).normalize();
 
+            Ray reflRay = new Ray(
+                    intersectionPos.add(reflDir.multiply(MathUtils.EPSILON)),
+                    reflDir
+            );
 
-            // TODO trace reflected ray
-            // TODO add contribution to output
+            // ############# Trace it #############
+            // Now we trace this ray - recursively!
+            Color reflColor = traceRay(scene, reflRay, depth+1, intersectionPos);
+
+            // ############# add contribution to output #############
+            float rf = (float)closestSurface.getMaterial().getReflectance();
+            // todo review this if necessary
+            r = Math.round((1-rf)*r + rf*reflColor.getRed());
+            g = Math.round((1-rf)*g + rf*reflColor.getGreen());
+            b = Math.round((1-rf)*b + rf*reflColor.getBlue());
         }
 
         // TODO: if transmittivity > 0

@@ -36,7 +36,7 @@ public abstract class Surface {
 
     public Surface(Material material, Transformation transformation) {
         this.material = material;
-        this.transformation = transformation;
+        this.transformation = transformation == null ? new Transformation() : transformation;
     }
 
     public Material getMaterial() {

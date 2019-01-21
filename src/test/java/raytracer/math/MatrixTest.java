@@ -26,6 +26,11 @@ public class MatrixTest {
 
         double[][] expected = { { -2, -2, -3 }, { 0, 0, 0 }, { -1, 0, 0} };
         assertEquals(new Matrix(expected), operand1.multiply(operand2));
+
+        // 4D - Identity
+        Vector4 v1234 = new Vector4(1,2,3,4);
+        assertEquals(v1234, Matrix.identity(4).multiply4x4(v1234));
+        assertEquals(Matrix.identity(4), Matrix.identity(4).multiply(Matrix.identity(4)));
     }
 
     @Test

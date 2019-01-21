@@ -49,6 +49,24 @@ public class MatrixUtilsTest {
 
     @Test
     public void objectToWorldspace() {
+        // no transformations = identity
+        Vector4 v1234 = new Vector4(1,2,3,4);
+        Matrix zeroTransform = MatrixUtils.ObjectToWorldspace(
+                new Vector3(1,1,1),
+                new Vector3(),
+                new Vector3()
+        );
+        assertEquals(id4, zeroTransform);
+        assertEquals(v1234, zeroTransform.multiply4x4(v1234));
+
+        // only scaling
+        assertEquals(scaleMat, MatrixUtils.ObjectToWorldspace(
+                new Vector3(4,5,6),
+                new Vector3(),
+                new Vector3()
+        ));
+
+        // translation + scaling
         assertEquals(scaleTransMat, transMat.multiply(scaleMat));
         assertEquals(scaleTransMat, MatrixUtils.ObjectToWorldspace(
                 new Vector3(4,5,6),
@@ -75,6 +93,9 @@ public class MatrixUtilsTest {
     public void fromScale() {
         // normal scale
         assertEquals(scaleMat, MatrixUtils.fromScale(new Vector3(4,5,6)));
+
+        assertEquals(new Vector4(3,0,0,1),
+                MatrixUtils.fromScale(new Vector3(3,1,1)).multiply4x4(new Vector4(1,0,0,1)));
 
         // zero scale
         assertEquals(id4, MatrixUtils.fromScale(new Vector3(1,1,1)));

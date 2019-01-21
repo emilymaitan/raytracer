@@ -46,6 +46,8 @@ public class SceneParser {
     public static final String example5 = new File(SceneParser.class.getResource("/scenes/example5.xml").getFile()).getAbsolutePath();
     public static final String example6 = new File(SceneParser.class.getResource("/scenes/example6.xml").getFile()).getAbsolutePath();
 
+    public static final String debugScene = new File(SceneParser.class.getResource("/scenes/debugScene.xml").getFile()).getAbsolutePath();
+
     public static final String dtdtest = new File(SceneParser.class.getResource("/scenes/dtd-test.xml").getFile()).getAbsolutePath();
 
 

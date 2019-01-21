@@ -1,9 +1,6 @@
 package raytracer.graphics.trafo;
 
-import raytracer.math.MathUtils;
-import raytracer.math.Matrix;
-import raytracer.math.MatrixUtils;
-import raytracer.math.Vector3;
+import raytracer.math.*;
 
 public class Transformation {
 
@@ -76,6 +73,21 @@ public class Transformation {
 
     public void setRotationDegrees(Vector3 rotationDegrees) {
         this.rotationDegrees = rotationDegrees;
+        calculateObjToWorld();
+    }
+
+    public void translateBy(Vector3 translation) {
+        this.translation = this.translation.add(translation);
+        calculateObjToWorld();
+    }
+
+    public void scaleBy(Vector3 scale) {
+        this.scale = this.scale.add(scale);
+        calculateObjToWorld();
+    }
+
+    public void rotateBy(Vector3 rotation) {
+        this.rotationDegrees = this.rotationDegrees.add(rotation);
         calculateObjToWorld();
     }
 
