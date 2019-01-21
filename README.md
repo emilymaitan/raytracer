@@ -19,22 +19,23 @@ type in the following commands:
 For Windows, use `gradlew.bat` instead.
 
 # Known Bugs #
-- Camera transformations are not correctly implemented.
+- Camera transformations are still not correctly implemented.
 
 # Fixed Bugs #
 - Phong illumination now correctly calculates specular highlights.
 - All light sources are now correctly parsed and parallel light has been fixed.
 - Matrix multiplication now works properly, and non-square multiplication is supported!
-- Proper error message for not existing files!
+- Proper error message for non-existing files!
 
 # New Features # 
-- Parse Triangles. 
-- Shadows.
-- Basic Reflection.
+- XML Parser is now fully functional: supports OBJ-files and textures
+- Shadows
+- Basic Reflection
 
 # Unfinished / Buggy Features #
-- Textures currently only work on spheres.
-- Transformation matrices have been implemented, but don't apply correctly.
+- Triangles/Meshes: they appear distorted when parsed (Even after hours of debugging. I don't know what's wrong.)
+- Textures: currently only work on spheres
+- Transformations: matrices have been implemented, but don't apply correctly. Only translations on spheres seem to work.
 
 # Main Sources for this project
 - "Shirley/Marshner": Fundamentals of Computer Graphics
@@ -48,6 +49,9 @@ Make sure that you have your JAVA_HOME set, and the wrapper file lies at gradle/
 The gradlew script is auto-generated but very verbose, check its error messages!
 
 # Q&A
+**What's missing?**
+Refraction, as well as the bonus tasks! 
+Debugging the transformations and obj files ate up all the time I had.
 
 **Why JAVA?**
 Several reasons! Most importantly, JAVA is the language I have most experience with. 
