@@ -1,16 +1,12 @@
 package raytracer.graphics.surfaces;
 
 import raytracer.graphics.Ray;
-import raytracer.graphics.illumination.Phong;
 import raytracer.graphics.materials.Material;
-import raytracer.graphics.materials.SolidMaterial;
-import raytracer.graphics.materials.TexturedMaterial;
 import raytracer.graphics.trafo.Transformation;
 import raytracer.math.MathUtils;
+import raytracer.math.MatrixUtils;
 import raytracer.math.Vector3;
 import raytracer.math.Vector4;
-
-import java.awt.Color;
 
 /**
  * Represents a sphere object in a scene.
@@ -35,8 +31,17 @@ public class Sphere extends Surface {
         // sphere equation: x^2 + y^2 + z^2 = r^2
         // intersection equation: (ray - spherecenter)^2 + r^2 = 0
         // TODO: worldPosition is bandaid fix, only works for translation!
-        Vector3 originOffset = ray.getOriginPoint().subtract(worldPosition());
 
+        // The idea: instead of transforming the object, we inverse transform the rays!
+        // ... sadly, I never got it to work. so here's a bandaid fix!
+        /*
+        Matrix wto = transformation.getObjToWorld().invert();
+        Ray invRay = new Ray(
+                MatrixUtils.transformPoint(ray.getOriginPoint(), wto),
+                MatrixUtils.transformDirection(ray.getDirection(), wto)
+        );*/
+
+        Vector3 originOffset = ray.getOriginPoint().subtract(worldPosition()); // band-aid
 
         double a = ray.getDirection().dot(ray.getDirection());
         double b = 2 * ray.getDirection().dot(originOffset);
@@ -82,12 +87,14 @@ public class Sphere extends Surface {
 
     @Override
     public Vector3 surfaceNormal(Vector3 at) {
+        //at = MatrixUtils.transformPoint(at, transformation.getObjToWorld().invert());
+
         // check if "at" is really a point on this surface
         if (!isPointOnSphere(at)) throw new RuntimeException("Vector is not on the sphere!");
 
         // the normal is simply the vector from the sphere's middle point
         // to the point on the surface
-        return at.subtract(worldPosition()).normalize();
+        return at.subtract(worldPosition()).normalize(); // TODO bandaid fix
     }
 
     @Override
@@ -106,7 +113,7 @@ public class Sphere extends Surface {
     }
 
     private boolean isPointOnSphere(Vector3 p) {
-        Vector3 o = p.subtract(worldPosition());
+        Vector3 o = p.subtract(position);
         return (o.getX()*o.getX() + o.getY()*o.getY() + o.getZ()*o.getZ() - radius*radius) <= MathUtils.EPSILON;
     }
 

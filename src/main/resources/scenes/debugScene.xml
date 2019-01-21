@@ -35,7 +35,7 @@
         </sphere>
 
         <sphere radius="1.0">
-            <position x="1.0" y="1.0" z="-2.0"/>
+            <position x="0.0" y="0.0" z="-2.0"/>
             <material_textured>
                 <texture name="mramor6x6.png"/>
                 <phong ka="0.3" kd="0.9" ks="1.0" exponent="200"/>
@@ -43,6 +43,11 @@
                 <transmittance t="0"/>
                 <refraction iof="0"/>
             </material_textured>
+            <transform>
+                <translate x="0" y="0" z="0" />
+                <rotateZ theta="0"/>
+                <scale x="1" y="1" z="1" />
+            </transform>
         </sphere>
 
         <!-- debug obj -->

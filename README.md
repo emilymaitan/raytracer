@@ -32,8 +32,14 @@ For Windows, use `gradlew.bat` instead.
 - Shadows.
 - Basic Reflection.
 
-# Sources for this project
-- "Shirley/Marshner": Fundamentals of Computer Graphics 
+# Unfinished / Buggy Features #
+- Textures currently only work on spheres.
+- Transformation matrices have been implemented, but don't apply correctly.
+
+# Main Sources for this project
+- "Shirley/Marshner": Fundamentals of Computer Graphics
+- "scratchapixel": https://www.scratchapixel.com 
+- Youtube Series "Grafik in Java": https://www.youtube.com/playlist?list=PLNmsVeXQZj7rvhHip_LTM-J-5wHw7dWnw
 
 # Troubleshooting
 

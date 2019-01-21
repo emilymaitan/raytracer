@@ -107,7 +107,12 @@ public class Mesh extends Surface {
 
     @Override
     public float[] getTextureCoordinates(Vector3 at) {
-        return new float[2];
+        float[] uv = new float[2];
+
+        uv[0] = 0.0f;
+        uv[1] = 0.0f;
+
+        return uv;
     }
 
     public Mesh(Material material, Transformation transformation, String name, ArrayList<TriangleFace> faces) {

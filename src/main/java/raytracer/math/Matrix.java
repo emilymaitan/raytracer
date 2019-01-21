@@ -189,8 +189,6 @@ public class Matrix {
         }
     }
 
-    // TODO test
-
     /**
      * Inverts a matrix.
      * @return the new inverted matrix

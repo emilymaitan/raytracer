@@ -1,5 +1,6 @@
 package raytracer.math;
 
+import raytracer.graphics.surfaces.Mesh;
 import raytracer.graphics.trafo.Transformation;
 
 /**
@@ -8,7 +9,14 @@ import raytracer.graphics.trafo.Transformation;
  */
 public class MatrixUtils {
 
-    public static Matrix ObjectToWorldspace(Vector3 scale, Vector3 rotation, Vector3 translation) {
+    /**
+     * Calculates a matrix that transforms a Vector4 from object to world space.
+     * @param scale scale
+     * @param rotation rotation
+     * @param translation translation
+     * @return matrix
+     */
+    public static Matrix objectToWorld(Vector3 scale, Vector3 rotation, Vector3 translation) {
 
         // calculate all matrices
         Matrix scaleMat = fromScale(scale);
@@ -23,6 +31,42 @@ public class MatrixUtils {
         return result;
     }
 
+    /**
+     * Calculates a matrix that transforms a Vector4 from world to object space.
+     * @param scale scale
+     * @param rotation rotation
+     * @param translation translation
+     * @return matrix
+     */
+    public static Matrix worldToObject(Vector3 scale, Vector3 rotation, Vector3 translation) {
+        Matrix s = fromScale(new Vector3(1.0/scale.getX(), 1.0/scale.getY(), 1.0/scale.getZ()));
+        Matrix rX = fromRotationX(-rotation.getX());
+        Matrix rY = fromRotationY(-rotation.getY());
+        Matrix rZ = fromRotationZ(-rotation.getZ());
+        Matrix t = fromTranslation(translation.multiply(-1));
+
+        Matrix result = rZ.multiply(t);
+        result = rY.multiply(result);
+        result = rX.multiply(result);
+        result = s.multiply(result);
+
+        return result;
+    }
+
+    public static Vector3 transformPoint(Vector3 vector, Matrix matrix) {
+        return new Vector3(matrix.multiply4x4(new Vector4(vector, 1)));
+    }
+
+    public static Vector3 transformDirection(Vector3 vector, Matrix matrix) {
+        return new Vector3(matrix.multiply4x4(new Vector4(vector, 0)));
+    }
+
+    /**
+     * Calculates a matrix that transforms a Vector4 from camera to world space.
+     * @param rotation rotation
+     * @param translation translation
+     * @return matrix
+     */
     public static Matrix cameraToWorld(Vector3 rotation, Vector3 translation) {
         Matrix rotMat = fromRotation(rotation);
         Matrix traMat = fromTranslation(translation);

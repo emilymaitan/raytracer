@@ -20,7 +20,7 @@ public class Transformation {
     private Matrix objToWorld; // pre-computed object-to-world matrix
 
     private void calculateObjToWorld () {
-        this.objToWorld = MatrixUtils.ObjectToWorldspace(scale, rotationDegrees, translation);
+        this.objToWorld = MatrixUtils.objectToWorld(scale, rotationDegrees, translation);
     }
 
     public Transformation() {

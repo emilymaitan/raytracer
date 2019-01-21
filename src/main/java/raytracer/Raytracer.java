@@ -18,11 +18,12 @@ import raytracer.math.Vector3;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class Raytracer {
 
-    /*
-    // Syntax: raytracer {file <filename> | scene {example1|example2} | color}
+
+    // Syntax: raytracer {file <'path/to/file.xml'> | scene {debug|example1|example2} | color}
     public static void main(String[] args) {
 
         String scenefile = null;
@@ -34,8 +35,14 @@ public class Raytracer {
             System.out.println(" Render an example scene: 'gradle run scene {example1|example2}");
             System.out.println(" Render rays as 500x500 color image: 'gradle run color");
         } else if (args.length == 2) {
-            if (args[0].equals("file")) {
-                scenefile = args[1];
+            if (args[0].equals("file")) { // check if file exists
+                File file = new File(args[1]);
+                if(file.exists() && !file.isDirectory()) scenefile = args[1];
+                else {
+                    System.out.println(" WARNING: File not found: " + file.getAbsolutePath());
+                    System.out.println(" Falling back to debug scene.");
+                    scenefile = SceneParser.debugScene;
+                }
             } else if (args[0].equals("scene")) {
                 switch (args[1]) {
                     case "example1": scenefile = SceneParser.example1; break;
@@ -56,7 +63,7 @@ public class Raytracer {
         }
 
         if (scenefile == null) { // fallback default
-            scenefile = SceneParser.example2;
+            scenefile = SceneParser.debugScene;
             System.out.printf("Now rendering: %s... (fallback default)%n", scenefile);
         } else
             System.out.printf("Now rendering: %s...%n", scenefile);
@@ -67,14 +74,17 @@ public class Raytracer {
                 image,
                 "png",
                 scene.getOutputFileName());
-    } */
+    }
 
+    // debug main method
+    /*
     public static void main(String[] args) {
         Scene scene = SceneParser.parseXML(SceneParser.debugScene);
         //BufferedImage image = renderRaycolorAsImage(scene.getCamera());
         BufferedImage image = renderSceneAsImage(scene);
         ImageWriter.writeImage(image, "png", "scene");
     }
+    */
 
     public static BufferedImage renderRaycolorAsImage(int resX, int resY) {
         return renderRaycolorAsImage(new Camera(resX, resY));
@@ -95,7 +105,6 @@ public class Raytracer {
                 //Ray ray = camera.generateRay(u,v);
                 Ray ray = camera.generateRay(i, j);
 
-                //Color color = traceDebug(ray);
                 Color color = ray.toColor(1);
 
                 image.setRGB(i, j, color.getRGB());
@@ -172,7 +181,8 @@ public class Raytracer {
         return color;
     }
 
-    // https://www.youtube.com/watch?v=m_IeoWvSbQI
+    // inspiration for this from here: https://www.youtube.com/watch?v=m_IeoWvSbQI
+    // and the tutorial
     public static Color traceRay(Scene scene, Ray ray, int depth, Vector3 currentView) {
         //initialize the color to black
         Color color = Color.BLACK;
@@ -197,13 +207,14 @@ public class Raytracer {
 
         if (closestSurface == null) { // if no intersection was found
             // add the background color
-            //return scene.getBackgroundColor();
-            return ray.toColor(1);
+            return scene.getBackgroundColor();
+            // return ray.toColor(1); // ray direction colored background for debugging
         }
 
         // An intersection exists! Now, we compute the color.
         // For this, we need to know the position where we intersected the element:
         Vector3 intersectionPos = ray.at(t);
+        // todo: transform intersection position from object to world space
 
         // Pre-calculate important variables at the reflection point.
         Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos);
@@ -248,8 +259,8 @@ public class Raytracer {
                 }
             }
 
-            if (shadowed) return Color.CYAN;
-            //if (shadowed) continue;
+            // if (shadowed) return Color.CYAN; // colored shadow for debugging
+            if (shadowed) continue;
 
             // Compute color
             Color phong = closestSurface.illuminate(
@@ -266,7 +277,7 @@ public class Raytracer {
             b += phong.getBlue();
         }
 
-        // TODO: if reflectivity > 0
+        // if reflectivity > 0
         if (closestSurface.getMaterial().getReflectance() > 0) {
             // ############# compute reflected ray #############
             // Perfect reflection formula: 2*(n.l)n - l

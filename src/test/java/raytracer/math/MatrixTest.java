@@ -64,6 +64,13 @@ public class MatrixTest {
     }
 
     @Test
+    public void invert() {
+        double[][] mat4 = { { 2,0,0,0 }, { 0,2,0,0 }, { 0,0,2,0 },{ 0,0,0,2 } };
+        Matrix m = new Matrix(mat4);
+        assertEquals(Matrix.identity(4), m.multiply(m.invert()));
+    }
+
+    @Test
     public void equals() {
         double[][] testData = { { 1, 0, 1 }, { 0, 0, 0 }, { 1, 1, 1} };
         assertEquals(operand1, new Matrix(data1));
