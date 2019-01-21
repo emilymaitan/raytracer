@@ -129,8 +129,8 @@ public class Raytracer {
         for (int i = 0; i < camera.getRes().getHorizontal(); i++) {
             for (int j = 0; j < camera.getRes().getVertical(); j++) {
                 // get a ray from the camera to this pixel
-                Ray ray = camera.generateRay(i, j);
-                //Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
+                //Ray ray = camera.generateRay(i, j);
+                Ray ray = camera.generateRay(camera.imPlane_u(i),camera.imPlane_v(j));
 
                 // trace this ray
                 Color color = traceRay(scene, ray);
@@ -224,6 +224,10 @@ public class Raytracer {
         // For this, we need to know the position where we intersected the element:
         Vector3 intersectionPos = ray.at(t);
 
+        // Pre-calculate important variables at the reflection point.
+        Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos);
+        Vector3 surfToView = scene.getCamera().getPosition().subtract(intersectionPos).normalize();
+
         // We need to sum up red, green and blue over all lights:
         int r = 0, g = 0, b = 0;
 
@@ -237,17 +241,18 @@ public class Raytracer {
         for (int i = 0; i < scene.getLights().size(); i++) {
             // Compute the required vectors for phong illumination:
             Vector3 surfaceToLight = null;
-            Vector3 surfaceNormal = closestSurface.surfaceNormal(intersectionPos);
 
             // Which kind of light source is it?
             if (scene.getLights().get(i) instanceof ParallelLight) {
                 ParallelLight light = (ParallelLight)scene.getLights().get(i);
-                surfaceToLight = light.getDirection().subtract(intersectionPos).normalize();
+                surfaceToLight = light.getDirection().multiply(-1).normalize(); // inverse
             } else if (scene.getLights().get(i) instanceof PointLight) {
                 PointLight light = (PointLight)scene.getLights().get(i);
                 surfaceToLight = light.getPosition().subtract(intersectionPos).normalize();
             } else if (scene.getLights().get(i) instanceof SpotLight) {
-                surfaceToLight = new Vector3();
+                SpotLight light = (SpotLight)scene.getLights().get(i);
+                // TODO implement this properly
+                surfaceToLight = light.getPosition().subtract(intersectionPos).normalize();
             } else throw new RuntimeException("Unknown light type!");
 
             // Are we shadowed?
@@ -262,14 +267,14 @@ public class Raytracer {
                 }
             }
 
-            //if (shadowed) return Color.BLACK; // TODO DO
+            if (shadowed) continue;
 
             // Compute color
             Color phong = closestSurface.illuminate(
                     scene.getLights().get(i).getColor(),
                     surfaceToLight,
                     surfaceNormal,
-                    intersectionPos.subtract(scene.getCamera().getPosition()).normalize(),
+                    surfToView,
                     scene.getAmbientLight() == null
             );
 
@@ -279,7 +284,18 @@ public class Raytracer {
         }
 
         // TODO: if reflectiviy > 0
+        if (closestSurface.getMaterial().getReflectance() > 0) {
+            // TODO compute reflected ray
+
+
+            // TODO trace reflected ray
+            // TODO add contribution to output
+        }
+
         // TODO: if transmittivity > 0
+        if (closestSurface.getMaterial().getTransmittance() > 0) {
+
+        }
 
 
         return new Color(

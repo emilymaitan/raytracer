@@ -28,4 +28,16 @@ public class SpotLight extends Light {
                 ", color=" + color +
                 ']';
     }
+
+    public Vector3 getPosition() {
+        return position;
+    }
+
+    public Vector3 getDirection() {
+        return direction;
+    }
+
+    public double[] getFalloff() {
+        return falloff;
+    }
 }
